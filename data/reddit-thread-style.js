@@ -1,51 +1,32 @@
 let loc = window.location;
-if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
-  //Store thread stats, placed here because it's container is removed next.
-  let THREAD_STATS = [];
-  THREAD_STATS[0] = $("span[data-tip*='Replies']").html();
-  THREAD_STATS[1] = $("span[data-tip*='Images']").html();
-  THREAD_STATS[2] = $("span[data-tip*='Page']").html();
+if (/http(?:s)?\:\/\/(?:www\.)reddit\.com\/r\/([a-z]*)\/comments\/.*/.test(loc)
+  ||
+  /http(?:s)?\:\/\/(?:www\.)([a-z]*)\.reddit\.com\/comments\/.*/.test(loc)) {
+  console.log("is reddit thread");
 
-  //Store ReCAPTCHA image.
-  let RECAPTCHA = $("#recaptcha_image").html();
+  //Store user information (username, karma, mail status)
+  let USER = [];
+  USER[0] = $(".user a").html();
+  USER[1] = $(".user .karma").html();
+  USER[2] = $(".user #mail").attr("class");
 
-  //Get rid of navigation.
-  $("#boardNavDesktop").remove();
-  $("#boardNavDesktopFoot").remove();
-  $("#boardNavMobile").remove();
-  $(".navLinks").remove();
-  $("#togglePostFormLink").remove();
-  $(".bottomCtrl").remove();
-  $("#absbot").remove();
-  $("#postForm").remove();
-  $(".button").remove();
-  $(".mobile").remove();
+  //Get Subreddit Information (.
+  let SUBREDDIT = [];
+  SUBREDDIT[0] = $("#redditname .hover").html();
+  SUBREDDIT[1] = $(".subscribers .number").html();
+  SUBREDDIT[2] = $(".users-online .number").html();
+  SUBREDDIT[3] = $(".usertext-body .md").html();
+  SUBREDDIT[4] = $(".sidecontentbox .content").html();
 
-  //Store what the board stuff is (board image, title, subtitle), then remove it.
-  let BOARD = [];
-  BOARD["BANNER"] = "//s.4cdn.org/image/title/" + $("#bannerCnt").attr("data-src");
-  BOARD["TITLE"] = $(".boardTitle").html();
-  BOARD["SUBTITLE"] = $(".boardSubtitle").html();
-  $(".boardBanner").remove();
-
-  //Get rid of <hr> tags on page.
-  $("hr").remove();
-
-  //Get rid of all of the ads and the ad pleas ([Advertise on 4chan]).
-  $(".ad-cnt").remove();
-  $(".ad-plea").remove();
-
-  //Store the blotter information (recent blog posts), then remove it
-  let BLOTTER = [];
-  BLOTTER[0] = $("#blotter-msgs tr:nth-child(2) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(1) td:nth-child(2)").html();
-  BLOTTER[1] = $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html() + "~$" + $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html();
-  BLOTTER[2] = $("#blotter-msgs tr:nth-child(2) td:nth-child(3)").html() + "~$" + $("#blotter-msgs tr:nth-child(3) td:nth-child(2)").html();
-  $("#blotter").remove();
+  //Get rid of header and sidebar.
+  $("#header").remove();
+  $(".side").remove();
 
   //At this point, we only have the posts, now for the reformatting.
 
-  //Remove current stylesheets.
+  //Remove current stylesheets, including subreddit stylesheets.
   $('link[rel*="stylesheet"]').remove();
+  $("link[src*='/r/']").remove();
 
   //Remove all 4chan Javascripts.
   $("script[src*='4cdn']").remove();
