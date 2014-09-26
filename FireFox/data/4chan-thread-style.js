@@ -1,4 +1,4 @@
-let loc = window.location;
+let loc = window.location;http://boards.4chan.org/b/thread/570675117
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
   //Store thread stats, placed here because it's container is removed next.
   let THREAD_STATS = [];
@@ -50,13 +50,14 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Remove all Javascripts.
   $("script").remove();
 
+
   //Include Bootstrap CSS and FontAwesome CSS
   $('head').append('<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
   $('head').append('<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
 
   //Include JQuery and Bootstrap JS (?)
-  ////$("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>");
-  ////$("body").append("<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
+  $("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>");
+  $("body").append("<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
 
   //Convert the thread container to the bootstrap equivalent.
   $(".thread").addClass("col-md-10");
@@ -100,7 +101,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   });
 
   //Put in thread statistics
-  $(".thread").prepend(THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / " + THREAD_STATS[2] + " Page<br>");
+  $(".thread").prepend(THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + "<br><br>");
 
   //Style Posts
   $(".postContainer .post").addClass("panel panel-default");
@@ -132,7 +133,9 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
       REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
     });
-    $(this).html("<a class='btn btn-default btn-xs' title='" + REPLIES[REPLIESI].length + " replies'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + "</a>");
+    $(this).html("<div class='btn-group' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "'></ul></div>");
+    REPLIES[REPLIESI].forEach(function(POS) {
+      $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
+    });
   });
-  //console.log(REPLIES.length);
 }

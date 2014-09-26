@@ -9,7 +9,13 @@ So that's what I'm doing, this will make 5 major social sites look similar by de
 - [ ] 4chan styling
   - [ ] 4chan home page styling
   - [ ] 4chan board styling
-  - [ ] 50% - 4chan thread styling
+  - [ ] 60% - 4chan thread styling
+    - [ ] Hook up Reply form
+    - [ ] Add gallery mode
+    - [ ] Add auto-loading of new replies
+    - [ ] Calm down s.4cdn.org/js/extension.878.js or find a way to actually get rid of it and replace its functionality
+      - [ ] Image expansion
+      - [ ] Hover over >>(id here) to show it
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling
   - [ ] 25% - Reddit comment thread styling
