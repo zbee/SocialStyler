@@ -5,6 +5,10 @@ Basically, I don't like how Reddit and 4chan look, and I'm boring, so I figured 
 
 So that's what I'm doing, this will make 5 major social sites look similar by default, but you'll also be able to make sites look like 4chan, Imgur, or Facebook.
 
+##How it looks
+Bootstrapped theme on 4chan thread.
+![Bootstrap on 4chan](https://raw.github.com/Zbee/SocialStyler/blob/master/4chanthread.png)
+
 ##Todo
 - [ ] 4chan styling
   - [ ] 4chan home page styling
