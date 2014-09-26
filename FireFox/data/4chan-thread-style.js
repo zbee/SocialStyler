@@ -47,9 +47,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Remove current stylesheets.
   $('link[rel*="stylesheet"]').remove();
 
-  //Remove all 4chan Javascripts.
-  $("script[src*='4cdn']").remove();
-  $("script[src*='4chan']").remove();
+  //Remove all Javascripts.
+  $("script").remove();
 
   //Include Bootstrap CSS and FontAwesome CSS
   $('head').append('<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
@@ -117,4 +116,23 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".postContainer .file").addClass("col-sm-3 pull-right");
   $(".postContainer .file img").attr("style", "max-width:100%;");
   $(".postContainer .sideArrows").remove();
+  $("a[title='Link to this post']").remove();
+  $("input[type='checkbox']").remove();
+  $(".postMenuBtn").remove();
+  
+  let REPLIES = [];
+  let REPLIESI = '';
+  $(".backlink").each(function(INDEX) {
+    REPLIESI = $(this).attr("id");
+    REPLIES[$(this).attr("id")] = [];
+    $(this).children("span").each(function(INDEXD) {
+      REPLIES[REPLIESI][INDEXD] = $(this).html();
+      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("href=\"#p");
+      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][1];
+      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
+      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
+    });
+    $(this).html("<a class='btn btn-default btn-xs' title='" + REPLIES[REPLIESI].length + " replies'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + "</a>");
+  });
+  //console.log(REPLIES.length);
 }
