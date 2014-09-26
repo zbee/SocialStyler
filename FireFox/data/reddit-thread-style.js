@@ -77,7 +77,7 @@ if (/http(?:s)?\:\/\/(?:www\.)reddit\.com\/r\/([a-z]*)\/comments\/.*/.test(loc)
   $(".footer-parent").hide();
 
   //Style Posts
-  $(".postContainer .post").addClass("panel panel-default");
+  $(".entry").addClass("panel panel-default");
   var $blockquote = $(".postContainer blockquote");
   $blockquote.replaceWith(function () {
       return $('<div/>', {

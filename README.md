@@ -18,7 +18,7 @@ Bootstrapped theme on 4chan thread.
     - [ ] Add gallery mode
     - [ ] Add auto-loading of new replies
     - [ ] Calm down s.4cdn.org/js/extension.878.js or find a way to actually get rid of it and replace its functionality
-      - [ ] Image expansion
+      - [X] Image expansion
       - [ ] Hover over >>(id here) to show it
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling
