@@ -50,7 +50,6 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Remove all Javascripts.
   $("script").remove();
 
-
   //Include Bootstrap CSS and FontAwesome CSS
   $('head').append('<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
   $('head').append('<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
@@ -100,10 +99,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#REPLY_BUTTON").removeClass("disabled");
   });
 
-  //Put in thread statistics
+  //Put in thread statistics.
   $(".thread").prepend(THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + "<br><br>");
 
-  //Style Posts
+  //Style Posts here.
   $(".postContainer .post").addClass("panel panel-default");
   var $blockquote = $(".postContainer blockquote");
   $blockquote.replaceWith(function () {
@@ -115,7 +114,11 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".postContainer .postInfo").addClass("panel-heading");
   $(".postContainer .panel-heading").removeClass("postInfo");
   $(".postContainer .file").addClass("col-sm-3 pull-right");
-  $(".postContainer .file img").attr("style", "max-width:100%;");
+  $(".fileText").remove();
+  $(".postContainer .file .fileThumb").each(function() {
+    $(this).children("img").attr("src", $(this).attr("href"));
+  });
+  $(".postContainer .file img").attr("style", "max-width:125px;");
   $(".postContainer .sideArrows").remove();
   $("a[title='Link to this post']").remove();
   $("input[type='checkbox']").remove();
@@ -137,5 +140,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     REPLIES[REPLIESI].forEach(function(POS) {
       $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
     });
+  });
+
+  //Adding functionality to posts.
+  $(".postContainer .file img").mouseenter(function() {
+    $(this).attr("style", "width:100%;");
+  }).mouseleave(function() {
+    $(this).attr("style", "width:125px;");
   });
 }
