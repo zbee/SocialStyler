@@ -7,7 +7,7 @@ So that's what I'm doing, this will make 5 major social sites look similar by de
 
 ##How it looks
 Bootstrapped theme on 4chan thread.
-![Bootstrap on 4chan](https://raw.github.com/Zbee/SocialStyler/blob/master/4chanthread.png)
+![Bootstrap on 4chan](https://raw.githubusercontent.com/Zbee/SocialStyler/master/4chanthread.png)
 
 ##Todo
 - [ ] 4chan styling
