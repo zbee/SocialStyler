@@ -106,10 +106,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".postContainer .post").addClass("panel panel-default");
   var $blockquote = $(".postContainer blockquote");
   $blockquote.replaceWith(function () {
-      return $('<div/>', {
-          class: 'panel-body',
-          html: this.innerHTML
-      });
+    return $('<div/>', {
+      class: 'panel-body',
+      html: this.innerHTML
+    });
   });
   $(".postContainer .postInfo").addClass("panel-heading");
   $(".postContainer .panel-heading").removeClass("postInfo");
@@ -136,11 +136,22 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
       REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
     });
-    $(this).html("<div class='btn-group' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "'></ul></div>");
+    $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
     REPLIES[REPLIESI].forEach(function(POS) {
       $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
     });
   });
+
+  let OP_IMAGE = $(".op .file").html();
+  let OP_TEXT = $(".op .panel-body").html();
+  $(".op .file").remove();
+  $(".op .panel-body").remove();
+  $(".op").append("<div class='file col-sm-3 pull-right'></div>");
+  $(".op .file").html(OP_IMAGE);
+  $(".op").append("<div class='panel-body'></div>");
+  $(".op .panel-body").html(OP_TEXT);
+  $(".opContainer").addClass("replyContainer").removeClass("opContainer");
+  $(".op").addClass("reply").removeClass("op");
 
   //Adding functionality to posts.
   $(".postContainer .file img").mouseenter(function() {
