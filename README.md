@@ -15,7 +15,7 @@ Bootstrapped theme on 4chan thread.
   - [ ] 4chan board styling
   - [ ] 70% - 4chan thread styling
     - [ ] Hook up Reply form
-    - [#] Add gallery mode
+    - [X] Add gallery mode
     - [ ] Add auto-loading of new replies
     - [X] Hide posts in threads
     - [X] Report posts in threads
