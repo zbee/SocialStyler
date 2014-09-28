@@ -48,6 +48,7 @@ if (/http(?:s)?\:\/\/(?:www\.)reddit\.com\/r\/([a-z]*)\/comments\/.*/.test(loc)
 
   //Add a sidebar revealing button to content.
   $(".content").prepend("<a onClick='$(this).toggle();$(\"#sb\").toggle();$(\".content\").addClass(\"col-md-offset-1 col-md-8\");$(\".content\").removeClass(\"col-md-12\");' class='btn btn-default btn-xs pull-left' id='sbs' style='display:none;'><i class='fa fa-angle-right'></i></a>");
+  
   //Add sidebar, before the thread container.
   $("body").prepend("<div class='col-md-3 text-center' id='sb'><br></div>");
   $("#sb").append("<a onClick='$(\"#sb\").toggle();$(\".content\").removeClass(\"col-md-offset-1 col-md-8\");$(\".content\").addClass(\"col-md-12\");$(\"#sbs\").toggle();' class='btn btn-default btn-xs pull-right'><i class='fa fa-angle-left'></i></a>");

@@ -13,10 +13,11 @@ Bootstrapped theme on 4chan thread.
 - [ ] 4chan styling
   - [ ] 4chan home page styling
   - [ ] 4chan board styling
-  - [ ] 60% - 4chan thread styling
+  - [ ] 70% - 4chan thread styling
     - [ ] Hook up Reply form
     - [ ] Add gallery mode
     - [ ] Add auto-loading of new replies
+    - [X] Hide posts in threads
     - [ ] Calm down s.4cdn.org/js/extension.878.js or find a way to actually get rid of it and replace its functionality
       - [X] Image expansion
       - [ ] Hover over >>(id here) to show it
