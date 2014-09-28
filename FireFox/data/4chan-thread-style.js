@@ -38,9 +38,9 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Store the blotter information (recent blog posts), then remove it
   let BLOTTER = [];
-  BLOTTER[0] = $("#blotter-msgs tr:nth-child(2) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(1) td:nth-child(2)").html();
-  BLOTTER[1] = $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html() + "~$" + $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html();
-  BLOTTER[2] = $("#blotter-msgs tr:nth-child(2) td:nth-child(3)").html() + "~$" + $("#blotter-msgs tr:nth-child(3) td:nth-child(2)").html();
+  BLOTTER[0] = $("#blotter-msgs tr:nth-child(1) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(1) td:nth-child(2)").html();
+  BLOTTER[1] = $("#blotter-msgs tr:nth-child(2) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html();
+  BLOTTER[2] = $("#blotter-msgs tr:nth-child(3) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(3) td:nth-child(2)").html();
   $("#blotter").remove();
 
   //At this point, we only have the posts, now for the reformatting.
@@ -67,7 +67,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#sb").append("<h1>" + BOARD["TITLE"] + "</h1>");
   $("#sb").append(BOARD["SUBTITLE"]);
   $("#sb").append("<hr>");
-  $("#sb").append("<img src='" + BOARD["BANNER"] + "' width='100%' />");
+  //$("#sb").append("<img src='" + BOARD["BANNER"] + "' width='100%' />");
+  $("#sb").append("<div id='blot' class='text-left'></div>");
+  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[0].split("~$")[0] + "'>"  + BLOTTER[0].split("~$")[1] + "</div>");
+  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[1].split("~$")[0] + "'>"  + BLOTTER[1].split("~$")[1] + "</div>");
+  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[2].split("~$")[0] + "'>"  + BLOTTER[2].split("~$")[1] + "</div>");
+
   $("#sb").append("<hr>");
   $("#sb").append("<div class='btn-group btn-group-justified'></div>");
   $(".btn-group").append("<a class='btn btn-xs btn-default disabled' id='REPLY_BUTTON'>Reply</a>");
@@ -102,19 +107,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Put in thread statistics.
   let THREAD_APPEND = "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + 
     " / <div class='btn-group'><a class='btn btn-xs btn-default disabled' id='st'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si'><i class='fa fa-th-large'></i></a></div><br><br>"
-  $(".thread").prepend(THREAD_APPEND);
-  $("#st").click(function() {
-    $(".thread").show();
-    $(".imgThread").hide();
-    $("#si").addClass("disabled");
-    $("#st").removeClass("disabled");
-  });
-  $("#si").click(function() {
-    $(".thread").hide();
-    $(".imgThread").show();
-    $("#st").addClass("disabled");
-    $("#si").removeClass("disabled");
-  });
+  $(".board").prepend(THREAD_APPEND);
 
   //Style Posts here.
   $(".postContainer .post").addClass("panel panel-default");
@@ -192,17 +185,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".op").addClass("reply").removeClass("op");
 
     //Make array of every image post.
-    let IMAGES = [];
-    $(".fileThumb").each(function(INDEX) {
-      IMAGES[INDEX] = [];
-      IMAGES[INDEX][0] = $(this).attr("href");
-      IMAGES[INDEX][1] = $(this).attr("id");
-    });
-    $(".board").append("<div class='imgThread'></div>");
+    $(".board").append("<div class='imgThread col-md-10'></div>");
     $(".imgThread").hide();
-    $(".imgThread").prepend(THREAD_APPEND);
-    IMAGES.forEach(function(ENTRY) {
-      $('.imgThread').append("<div class='col-xs-6 col-sm-2'><a href='" + ENTRY[0] + "' class='thumbnail'><img src='" + ENTRY[0] + "'></a></div>");
+    $(".fileThumb").each(function(INDEX) {
+      INDEX += 1;
+      $('.imgThread').append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><img src='" + $(this).attr("href") + "' style='max-height:250px !important;'></a></div>");
+      if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
     });
 
     //Make greentext green.
@@ -213,5 +201,19 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(this).attr("style", "width:100%;");
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
+  });
+
+
+  $("#st").click(function() {
+    $(".thread").show();
+    $(".imgThread").hide();
+    $("#st").addClass("disabled");
+    $("#si").removeClass("disabled");
+  });
+  $("#si").click(function() {
+    $(".thread").hide();
+    $(".imgThread").show();
+    $("#si").addClass("disabled");
+    $("#st").removeClass("disabled");
   });
 }
