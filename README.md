@@ -15,12 +15,13 @@ Bootstrapped theme on 4chan thread.
   - [ ] 4chan board styling
   - [ ] 70% - 4chan thread styling
     - [ ] Hook up Reply form
-    - [ ] Add gallery mode
+    - [#] Add gallery mode
     - [ ] Add auto-loading of new replies
     - [X] Hide posts in threads
-    - [ ] Calm down s.4cdn.org/js/extension.878.js or find a way to actually get rid of it and replace its functionality
-      - [X] Image expansion
-      - [ ] Hover over >>(id here) to show it
+    - [X] Report posts in threads
+    - [X] Image expansion
+    - [ ] Hover over >>(id here) to show it
+    - [ ] Highlight posts by poster
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling
   - [ ] 25% - Reddit comment thread styling
