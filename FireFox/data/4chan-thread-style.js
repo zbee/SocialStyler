@@ -196,6 +196,19 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     //Make greentext green.
     $(".quote").css("color", "green");
 
+    //Allow post highlighting.
+    $(".panel").each(function() {
+      $(this).attr("data-handle", $(this).find(".hand").html());
+    });
+    $(".hand").each(function() {
+      $(this).attr("data-handle", $(this).html());
+      $(this).css("cursor", "pointer");
+    });
+    $(".hand").click(function() {
+      $(".panel").removeClass("panel-info");
+      $(".panel[data-handle='" + $(this).attr("data-handle") + "']").addClass("panel-info");
+    });
+
   //Adding functionality to posts.
   $(".postContainer .file img").mouseenter(function() {
     $(this).attr("style", "width:100%;");

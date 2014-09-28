@@ -24,7 +24,7 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [X] Report posts in threads
     - [X] Image expansion
     - [ ] Hover over >>(id here) to show it
-    - [ ] Highlight posts by poster
+    - [X] Highlight posts by poster
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling
   - [ ] 25% - Reddit comment thread styling
