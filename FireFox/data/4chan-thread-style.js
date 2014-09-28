@@ -20,6 +20,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#postForm").remove();
   $(".button").remove();
   $(".mobile").remove();
+  $("#quote-preview").remove();
 
   //Store what the board stuff is (board image, title, subtitle), then remove it.
   let BOARD = [];
@@ -123,35 +124,56 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("a[title='Link to this post']").remove();
   $("input[type='checkbox']").remove();
   $(".postMenuBtn").remove();
-  
-  let REPLIES = [];
-  let REPLIESI = '';
-  $(".backlink").each(function(INDEX) {
-    REPLIESI = $(this).attr("id");
-    REPLIES[$(this).attr("id")] = [];
-    $(this).children("span").each(function(INDEXD) {
-      REPLIES[REPLIESI][INDEXD] = $(this).html();
-      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("href=\"#p");
-      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][1];
-      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
-      REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
-    });
-    $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
-    REPLIES[REPLIESI].forEach(function(POS) {
-      $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
-    });
-  });
 
-  let OP_IMAGE = $(".op .file").html();
-  let OP_TEXT = $(".op .panel-body").html();
-  $(".op .file").remove();
-  $(".op .panel-body").remove();
-  $(".op").append("<div class='file col-sm-3 pull-right'></div>");
-  $(".op .file").html(OP_IMAGE);
-  $(".op").append("<div class='panel-body'></div>");
-  $(".op .panel-body").html(OP_TEXT);
-  $(".opContainer").addClass("replyContainer").removeClass("opContainer");
-  $(".op").addClass("reply").removeClass("op");
+    //Reorganize the headings of posts
+    let HEADERS = [];
+    $(".panel-heading").each(function(INDEX) {
+      HEADERS[$(this).attr("id")] = [];
+      HEADERS[$(this).attr("id")]["NAME"] = $(this).children(".nameBlock").html();
+      HEADERS[$(this).attr("id")]["DATE"] = $(this).children(".dateTime").html();
+        HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATE"].split("(")[0];
+        HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATEF"].split("/");
+        HEADERS[$(this).attr("id")]["DATEF"] = "<u>20" + HEADERS[$(this).attr("id")]["DATEF"][2] + "-" + HEADERS[$(this).attr("id")]["DATEF"][1] + "-" + HEADERS[$(this).attr("id")]["DATEF"][0] + " " + HEADERS[$(this).attr("id")]["DATE"].split(")")[1] + "</u>";
+        HEADERS[$(this).attr("id")]["DATE"] = HEADERS[$(this).attr("id")]["DATEF"];
+      HEADERS[$(this).attr("id")]["ID"] = $(this).attr("id").split("pi")[1];
+      let HEADER = '';
+      HEADER = HEADERS[$(this).attr("id")]["DATE"] + " by " + HEADERS[$(this).attr("id")]["NAME"] + " No. <a href='javascript:;'>" + HEADERS[$(this).attr("id")]["ID"] + "</a><div class='backlink' style='dispaly:none'>" + $(this).children(".backlink").html() + "</div>";
+      $(this).html(HEADER);
+    });
+  
+    //Add a Dropdown menu with the replies to this post.
+    let REPLIES = [];
+    let REPLIESI = '';
+    $(".backlink").each(function(INDEX) {
+      REPLIESI = $(this).attr("id");
+      REPLIES[$(this).attr("id")] = [];
+      $(this).children("span").each(function(INDEXD) {
+        REPLIES[REPLIESI][INDEXD] = $(this).html();
+        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("href=\"#p");
+        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][1];
+        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
+        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
+      });
+      $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
+      REPLIES[REPLIESI].forEach(function(POS) {
+        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
+      });
+    });
+
+    //Style OP's post to be the same as replies.
+    let OP_IMAGE = $(".op .file").html();
+    let OP_TEXT = $(".op .panel-body").html();
+    $(".op .file").remove();
+    $(".op .panel-body").remove();
+    $(".op").append("<div class='file col-sm-3 pull-right'></div>");
+    $(".op .file").html(OP_IMAGE);
+    $(".op").append("<div class='panel-body'></div>");
+    $(".op .panel-body").html(OP_TEXT);
+    $(".opContainer").addClass("replyContainer").removeClass("opContainer");
+    $(".op").addClass("reply").removeClass("op");
+
+    //Make greentext green.
+    $(".quote").css('color', 'green');
 
   //Adding functionality to posts.
   $(".postContainer .file img").mouseenter(function() {
