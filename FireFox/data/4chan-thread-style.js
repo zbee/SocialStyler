@@ -1,3 +1,8 @@
+var MOUSE_POS = { x: -1, y: -1 };
+$(document).mousemove(function(event) {
+  MOUSE_POS.x = event.pageX;
+  MOUSE_POS.y = event.pageY;
+});
 let loc = window.location;http://boards.4chan.org/b/thread/570675117
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
   //Store thread stats, placed here because it's container is removed next.
@@ -70,8 +75,6 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //$("#sb").append("<img src='" + BOARD["BANNER"] + "' width='100%' />");
   $("#sb").append("<div id='blot' class='text-left'></div>");
   $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[0].split("~$")[0] + "'>"  + BLOTTER[0].split("~$")[1] + "</div>");
-  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[1].split("~$")[0] + "'>"  + BLOTTER[1].split("~$")[1] + "</div>");
-  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[2].split("~$")[0] + "'>"  + BLOTTER[2].split("~$")[1] + "</div>");
 
   $("#sb").append("<hr>");
   $("#sb").append("<div class='btn-group btn-group-justified'></div>");
@@ -106,7 +109,18 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Put in thread statistics.
   let THREAD_APPEND = "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + 
-    " / <div class='btn-group'><a class='btn btn-xs btn-default disabled' id='st'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si'><i class='fa fa-th-large'></i></a></div><br><br>"
+    " / <div class='btn-group'><a class='btn btn-xs btn-default disabled' id='st'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si'><i class='fa fa-th-large'></i></a></div>" +
+    " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
+    "<li><a href='#'>Posts with Replies</a></li>" +
+    "<li><a href='#'>Posts that are Replies</a></li>" +
+    "<li><a href='#'>Posts with greentext</a></li>" +
+    "<li><a href='#'>Posts that are long</a></li>" +
+    "<li class='divider'></li>" +
+    "<li role='presentation' class='dropdown-header'>Filter to posts with a filetype</li>" +
+    "<li><a href='#'>.gif</a></li>" +
+    "<li><a href='#'>.webm</a></li>" +
+    "<li><a href='#'>Any image</a></li>" +
+    "</ul></div><br><br>";
   $(".board").prepend(THREAD_APPEND);
 
   //Style Posts here.
@@ -120,7 +134,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   });
   $(".postContainer .postInfo").addClass("panel-heading");
   $(".postContainer .panel-heading").removeClass("postInfo");
-  $(".postContainer .file").addClass("col-sm-3 pull-right");
+  $(".postContainer .file").addClass("col-sm-4 pull-right text-right");
   $(".fileText").remove();
   $(".postContainer .file .fileThumb").each(function() {
     $(this).children("img").attr("src", $(this).attr("href"));
@@ -149,7 +163,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       });
       $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
       REPLIES[REPLIESI].forEach(function(POS) {
-        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "'>&gt;&gt;" + POS + "</a></li>");
+        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "' class='dropquotelink'>&gt;&gt;" + POS + "</a></li>");
       });
     });
 
@@ -177,12 +191,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     let OP_TEXT = $(".op .panel-body").html();
     $(".op .file").remove();
     $(".op .panel-body").remove();
-    $(".op").append("<div class='file col-sm-3 pull-right'></div>");
+    $(".op").append("<div class='file col-sm-4 pull-right text-right'></div>");
     $(".op .file").html(OP_IMAGE);
     $(".op").append("<div class='panel-body'></div>");
     $(".op .panel-body").html(OP_TEXT);
     $(".opContainer").addClass("replyContainer").removeClass("opContainer");
-    $(".op").addClass("reply").removeClass("op");
+    $(".op").addClass("reply o-p").removeClass("op");
 
     //Make array of every image post.
     $(".board").append("<div class='imgThread col-md-10'></div>");
@@ -209,13 +223,36 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".panel[data-handle='" + $(this).attr("data-handle") + "']").addClass("panel-info");
     });
 
+      //Highlight posts by OP by default.
+      $(".panel[data-handle='" + $(".o-p").attr("data-handle") + "']").addClass("panel-info");
+
+    //Hover over quote links.
+    $(".quotelink").mouseenter(function() {
+      $(".board").append("<div class='quoteapp'></div>");
+      $(".quoteapp").css("position", "absolute");
+      $(".quoteapp").css("top", MOUSE_POS.y + 10);
+      $(".quoteapp").css("left", MOUSE_POS.x + 10);
+      $(".quoteapp").html($("#pc" + $(this).attr("href").split("p")[1]).html());
+    }).mouseleave(function() {
+      $(".quoteapp").remove();
+    });
+    $(".dropquotelink").mouseenter(function() {
+      $(".board").append("<div class='quoteapp'></div>");
+      $(".quoteapp").css("position", "absolute");
+      $(".quoteapp").html($($(this).attr("href")).html());
+      $(".quoteapp").css("top", MOUSE_POS.y - 10);
+      $(".quoteapp").css("z-index", "999999");
+      $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
+    }).mouseleave(function() {
+      $(".quoteapp").remove();
+    });
+
   //Adding functionality to posts.
   $(".postContainer .file img").mouseenter(function() {
     $(this).attr("style", "width:100%;");
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
   });
-
 
   $("#st").click(function() {
     $(".thread").show();
