@@ -1,4 +1,4 @@
-var MOUSE_POS = { x: -1, y: -1 };
+let MOUSE_POS = { x: -1, y: -1 };
 $(document).mousemove(function(event) {
   MOUSE_POS.x = event.pageX;
   MOUSE_POS.y = event.pageY;
@@ -61,7 +61,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $('head').append('<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
 
   //Include JQuery and Bootstrap JS (?)
-  $("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>");
+  $("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>");
   $("body").append("<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
 
   //Convert the thread container to the bootstrap equivalent.
@@ -137,7 +137,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".postContainer .file").addClass("col-sm-4 pull-right text-right");
   $(".fileText").remove();
   $(".postContainer .file .fileThumb").each(function() {
-    $(this).children("img").attr("src", $(this).attr("href"));
+    if ($(this).attr("href").indexOf(".webm") < 1) {
+      $(this).children("img").attr("src", $(this).attr("href"));
+    } else {
+      $(this).children("img").remove();
+      $(this).append("<video src='" + $(this).attr("href") + "' style='max-width:125px;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop title='video.webm'></video>");
+    }
   });
   $(".postContainer").each(function() {
     $(this).find("img").attr("id", $(this).attr("id").split("pc")[1]);
@@ -227,28 +232,27 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".panel[data-handle='" + $(".o-p").attr("data-handle") + "']").addClass("panel-info");
 
     //Hover over quote links.
-    $(".quotelink").mouseenter(function() {
+    $(".quotelink, .dropquotelink").mouseenter(function() {
       $(".board").append("<div class='quoteapp'></div>");
       $(".quoteapp").css("position", "absolute");
-      $(".quoteapp").css("top", MOUSE_POS.y + 10);
-      $(".quoteapp").css("left", MOUSE_POS.x + 10);
-      $(".quoteapp").html($("#pc" + $(this).attr("href").split("p")[1]).html());
-    }).mouseleave(function() {
-      $(".quoteapp").remove();
-    });
-    $(".dropquotelink").mouseenter(function() {
-      $(".board").append("<div class='quoteapp'></div>");
-      $(".quoteapp").css("position", "absolute");
-      $(".quoteapp").html($($(this).attr("href")).html());
-      $(".quoteapp").css("top", MOUSE_POS.y - 10);
       $(".quoteapp").css("z-index", "999999");
-      $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
+      $(".quoteapp").html($("#pc" + $(this).attr("href").replace(/\D/g,'')).html());
+      if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
+        $(".quoteapp").css("top", MOUSE_POS.y - $(".quoteapp").height() - 10);
+      } else {
+        $(".quoteapp").css("top", MOUSE_POS.y + 10);
+      }
+      if (MOUSE_POS.x + $(".quoteapp").width() > $(window).width()) { //If quote would extend right-wards:
+        $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
+      } else {
+        $(".quoteapp").css("left", MOUSE_POS.x + 10);
+      }
     }).mouseleave(function() {
       $(".quoteapp").remove();
     });
 
   //Adding functionality to posts.
-  $(".postContainer .file img").mouseenter(function() {
+  $(".postContainer .file img, video").mouseenter(function() {
     $(this).attr("style", "width:100%;");
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
