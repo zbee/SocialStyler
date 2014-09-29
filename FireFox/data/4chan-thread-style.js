@@ -141,7 +141,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(this).children("img").attr("src", $(this).attr("href"));
     } else {
       $(this).children("img").remove();
-      $(this).append("<video src='" + $(this).attr("href") + "' style='max-width:125px;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop title='video.webm'></video>");
+      $(this).append("<video src='" + $(this).attr("href") + "' style='max-width:125px;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video>");
     }
   });
   $(".postContainer").each(function() {
@@ -203,12 +203,16 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".opContainer").addClass("replyContainer").removeClass("opContainer");
     $(".op").addClass("reply o-p").removeClass("op");
 
-    //Make array of every image post.
+    //Make gallery view.
     $(".board").append("<div class='imgThread col-md-10'></div>");
     $(".imgThread").hide();
     $(".fileThumb").each(function(INDEX) {
       INDEX += 1;
-      $('.imgThread').append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><img src='" + $(this).attr("href") + "' style='max-height:250px !important;'></a></div>");
+      if ($(this).attr("href").indexOf(".webm") < 1) {
+        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><img src='" + $(this).attr("href") + "' style='max-height:250px !important;'></a></div>");
+      } else {
+        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><video src='" + $(this).attr("href") + "' style='max-height:250px;max-width:100%;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video></a></div>");
+      }
       if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
     });
 
@@ -252,7 +256,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     });
 
   //Adding functionality to posts.
-  $(".postContainer .file img, video").mouseenter(function() {
+  $(".postContainer .file img, .file video").mouseenter(function() {
     $(this).attr("style", "width:100%;");
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
