@@ -250,6 +250,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".board").append("<div class='quoteapp'></div>");
       $(".quoteapp").css("position", "absolute");
       $(".quoteapp").css("z-index", "999999");
+      $(".quoteapp").css("max-width", "90%");
       $(".quoteapp").html($("#pc" + $(this).attr("href").replace(/\D/g,'')).html());
       if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
         $(".quoteapp").css("top", MOUSE_POS.y - $(".quoteapp").height() - 10);
