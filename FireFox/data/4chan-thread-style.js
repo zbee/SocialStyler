@@ -327,21 +327,40 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
           }
         });
         break;
+      case "F":
+        $(".panel").each(function() {
+          if ($(this).find("img[src*='.gif']").length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
+      case "W":
+        $(".panel").each(function() {
+          if ($(this).find("video[src*='.webm']").length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
+      case "I":
+        $(".panel").each(function() {
+          if ($(this).find("img").length < 1 && $(this).find("video").length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
       default:
         console.log("Filter function broke.");
     }
   }
 
-  $("#FIL_R").click(function() {
-    FILTER("R");
-  });
-  $("#FIL_A").click(function() {
-    FILTER("A");
-  });
-  $("#FIL_G").click(function() {
-    FILTER("G");
-  });
-  $("#FIL_L").click(function() {
-    FILTER("L");
-  });
+  $("#FIL_R").click(function() { FILTER("R"); });
+  $("#FIL_A").click(function() { FILTER("A"); });
+  $("#FIL_G").click(function() { FILTER("G"); });
+  $("#FIL_L").click(function() { FILTER("L"); });
+  $("#FIL_F").click(function() { FILTER("F"); });
+  $("#FIL_W").click(function() { FILTER("W"); });
+  $("#FIL_I").click(function() { FILTER("I"); });
 }
