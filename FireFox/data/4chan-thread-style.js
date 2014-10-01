@@ -8,7 +8,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Store thread stats, placed here because it's container is removed next.
   let THREAD_STATS = [];
   THREAD_STATS[0] = ($("span[data-tip*='Replies']").html() != null) ? $("span[data-tip*='Replies']").html() : $(".thread-stats em").html();
-  THREAD_STATS[1] = $("span[data-tip*='Images']").html();
+  THREAD_STATS[1] = ($("span[data-tip*='Image']").html() != null) ? $("span[data-tip*='Image']").html() : $("em[data-tip*='Image']").html();
   THREAD_STATS[2] = $("span[data-tip*='Page']").html();
 
   //Store ReCAPTCHA image.
@@ -26,6 +26,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".button").remove();
   $(".mobile").remove();
   $("#quote-preview").remove();
+  $("img[style*='position:absolute']").remove();
+  $("#globalMessage").remove();
+  $("#globalToggle").remove();
+  $("#toggleMsgBtn").remove();
 
   //Store what the board stuff is (board image, title, subtitle), then remove it.
   let BOARD = [];
@@ -168,7 +172,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       });
       $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
       REPLIES[REPLIESI].forEach(function(POS) {
-        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "' class='dropquotelink'>&gt;&gt;" + POS + "</a></li>");
+        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "' class='dropquotelink'>&gt;&gt;" + POS + " <small class='label' style='" + $("#pc" + POS).find(".hand").attr("style") + ";opacity:0.6'>" + $("#pc" + POS).find(".hand").html() + "</small></a></li>");
       });
     });
 

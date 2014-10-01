@@ -22,13 +22,12 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [X] Report posts in threads
     - [X] Image expansion
     - [X] Highlight posts by poster
-      - [X] Turn off all highlighting
     - [X] Hover over >>(id here) to show it
-      - [X] Check if post won't fit below the >>(id here)
-      - [ ] In dropdown quote links show the poster's uid next to link (>>4090458049 [0+11jd/-], per se)
+      - [ ] Change current mouse position to be relative to where you're at in the window, not the whole document (if you scroll down currently you're met with wonkier quote pop-ups)
     - [X] Show number of posts by one person
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
-    - [ ] Add auto-loading of new replies (when thread 404s, offer to add all images to .zip; Better than 4bros since it'll be able to do it after it 404s)
+    - [ ] Add auto-loading of new replies
+      - [ ] When thread 404s, offer to combine all images into a .zip (since 4bros can only do active threads)
     - [ ] Hook up Reply form
     - [ ] Viewing of conversations (when someone says >>(id here) and they have a reply [from that person], add a button to see all replies between these 2 people that are to each other)
     - [ ] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still) (would require input of which numbers do what and if rerolls are allowed)
