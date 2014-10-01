@@ -1,7 +1,8 @@
 let MOUSE_POS = { x: -1, y: -1 };
 $(document).mousemove(function(event) {
   MOUSE_POS.x = event.pageX;
-  MOUSE_POS.y = event.pageY;
+  MOUSE_POS.y = event.pageY - $(window).scrollTop();
+  MOUSE_POS.d = $(window).scrollTop();
 });
 let loc = window.location;http://boards.4chan.org/b/thread/570675117
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
@@ -259,13 +260,14 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
         $(".quoteapp").css("top", MOUSE_POS.y - $(".quoteapp").height() - 10);
       } else {
-        $(".quoteapp").css("top", MOUSE_POS.y + 10);
+        $(".quoteapp").css("top", MOUSE_POS.y + MOUSE_POS.d + 10);
       }
       if (MOUSE_POS.x + $(".quoteapp").width() > $(window).width()) { //If quote would extend right-wards:
         $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
       } else {
         $(".quoteapp").css("left", MOUSE_POS.x + 10);
       }
+      console.log(MOUSE_POS.y);
     }).mouseleave(function() {
       $(".quoteapp").remove();
     });
