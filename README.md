@@ -22,9 +22,12 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [X] Report posts in threads
     - [X] Image expansion
     - [X] Highlight posts by poster
+      - [X] Turn off all highlighting
     - [X] Hover over >>(id here) to show it
       - [X] Check if post won't fit below the >>(id here)
-    - [ ] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
+      - [ ] In dropdown quote links show the poster's uid next to link (>>4090458049 [0+11jd/-], per se)
+    - [X] Show number of posts by one person
+    - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
     - [ ] Add auto-loading of new replies (when thread 404s, offer to add all images to .zip; Better than 4bros since it'll be able to do it after it 404s)
     - [ ] Hook up Reply form
     - [ ] Viewing of conversations (when someone says >>(id here) and they have a reply [from that person], add a button to see all replies between these 2 people that are to each other)
@@ -39,6 +42,8 @@ Bootstrapped theme on 4chan thread (gallery view).
   - [ ] Imgur image page styling
   - [ ] Imgur user page styling
   - [ ] Imgur analytics styling
+- [ ] Other Chans
+  - [ ] 8chan
 - [ ] Twitter styling
   - [ ] Twitter home page styling
   - [ ] Twitter user page styling

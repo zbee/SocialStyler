@@ -111,15 +111,15 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   let THREAD_APPEND = "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + 
     " / <div class='btn-group'><a class='btn btn-xs btn-default disabled' id='st'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si'><i class='fa fa-th-large'></i></a></div>" +
     " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
-    "<li><a href='#'>Posts with Replies</a></li>" +
-    "<li><a href='#'>Posts that are Replies</a></li>" +
-    "<li><a href='#'>Posts with greentext</a></li>" +
-    "<li><a href='#'>Posts that are long</a></li>" +
+    "<li><a id='FIL_R' style='cursor:pointer'>Posts with Replies</a></li>" +
+    "<li><a id='FIL_A' style='cursor:pointer'>Posts that are Replies</a></li>" +
+    "<li><a id='FIL_G' style='cursor:pointer'>Posts with greentext</a></li>" +
+    "<li><a id='FIL_L' style='cursor:pointer'>Posts that are long</a></li>" +
     "<li class='divider'></li>" +
     "<li role='presentation' class='dropdown-header'>Filter to posts with a filetype</li>" +
-    "<li><a href='#'>.gif</a></li>" +
-    "<li><a href='#'>.webm</a></li>" +
-    "<li><a href='#'>Any image</a></li>" +
+    "<li><a id='FIL_F' style='cursor:pointer'>.gif</a></li>" +
+    "<li><a id='FIL_W' style='cursor:pointer'>.webm</a></li>" +
+    "<li><a id='FIL_I' style='cursor:pointer'>Any image</a></li>" +
     "</ul></div><br><br>";
   $(".board").prepend(THREAD_APPEND);
 
@@ -176,7 +176,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     let HEADERS = [];
     $(".panel-heading").each(function(INDEX) {
       HEADERS[$(this).attr("id")] = [];
-      HEADERS[$(this).attr("id")]["NAME"] = $(this).children(".nameBlock").html();
+      HEADERS[$(this).attr("id")]["NAME"] = $(this).find(".name").html();
+        HEADERS[$(this).attr("id")]["HAND"] = $(this).find(".hand").html();
+        HEADERS[$(this).attr("id")]["HANDC"] = $(this).find(".hand").attr("style");
+        HEADERS[$(this).attr("id")]["HANDC"] = "background: " + HEADERS[$(this).attr("id")]["HANDC"].split(";")[0].split(":")[1] + ";" + HEADERS[$(this).attr("id")]["HANDC"].split(";")[1];
       HEADERS[$(this).attr("id")]["DATE"] = $(this).children(".dateTime").html();
         HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATE"].split("(")[0];
         HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATEF"].split("/");
@@ -184,7 +187,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
         HEADERS[$(this).attr("id")]["DATE"] = HEADERS[$(this).attr("id")]["DATEF"];
       HEADERS[$(this).attr("id")]["ID"] = $(this).attr("id").split("pi")[1];
       let HEADER = "";
-      HEADER = HEADERS[$(this).attr("id")]["DATE"] + " by " + HEADERS[$(this).attr("id")]["NAME"] + " No. <a href='javascript:;'>" + HEADERS[$(this).attr("id")]["ID"] + "</a>" + 
+      HEADER = HEADERS[$(this).attr("id")]["DATE"] + " by " + HEADERS[$(this).attr("id")]["NAME"] +  " (ID: <span class='hand label' style='" + HEADERS[$(this).attr("id")]["HANDC"] + ";cursor:pointer;'>" + HEADERS[$(this).attr("id")]["HAND"] + "</span>) No. <a href='javascript:;'>" + HEADERS[$(this).attr("id")]["ID"] + "</a>" + 
         (($(this).children(".backlink").html() != null) ? $(this).children(".backlink").html() : "") + 
         "<a class='btn btn-default btn-xs pull-right' title='Hide Post' onClick='$(\"#p" + HEADERS[$(this).attr("id")]["ID"] + " .panel-body\").toggle();$(\"#p" + HEADERS[$(this).attr("id")]["ID"] + " .file\").toggle();'><i class='fa fa-eye-slash'></i></a></div>" +
         "<a class='btn btn-default btn-xs pull-right' title='Report Post' target='_blank' href='https://sys.4chan.org/b/imgboard.php?mode=report&no=" + HEADERS[$(this).attr("id")]["ID"] + "'><i class='fa fa-exclamation-circle'></i></a></div>";
@@ -220,16 +223,23 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".quote").css("color", "green");
 
     //Allow post highlighting.
+    HAND_COUNT = [];
+    HAND_SAY = [];
     $(".panel").each(function() {
       $(this).attr("data-handle", $(this).find(".hand").html());
     });
     $(".hand").each(function() {
       $(this).attr("data-handle", $(this).html());
-      $(this).css("cursor", "pointer");
+      HAND_COUNT[$(this).html()] = (HAND_COUNT[$(this).html()] != null) ? HAND_COUNT[$(this).html()] + 1 : 1;
     });
+      //Number of posts a poster has in thread.
+      $(".hand").each(function() {
+        HAND_SAY[$(this).html()] = (HAND_COUNT[$(this).html()] > 1) ? ((HAND_COUNT[$(this).html()] > 100) ? " 100+ posts" : " " + HAND_COUNT[$(this).html()]) + " posts" : "";
+        $(this).after(HAND_SAY[$(this).html()]);
+      });
     $(".hand").click(function() {
-      $(".panel").removeClass("panel-info");
-      $(".panel[data-handle='" + $(this).attr("data-handle") + "']").addClass("panel-info");
+      $(".panel[data-handle!='" + $(this).attr("data-handle") + "']").removeClass("panel-info");
+      $(".panel[data-handle='" + $(this).attr("data-handle") + "']").toggleClass("panel-info");
     });
 
       //Highlight posts by OP by default.
@@ -273,5 +283,64 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".imgThread").show();
     $("#si").addClass("disabled");
     $("#st").removeClass("disabled");
+  });
+
+  //Add thread filtering to thread view.
+  let FILTER = (type) => {
+    switch (type) {
+      case "R":
+        $(".panel:not(:has(.fa-share))").find(".panel-body").toggle();
+        $(".panel:not(:has(.fa-share))").find(".file").toggle();
+        break;
+      case "A":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body:contains(">>")').length < 1) { //If it doesn't contain a reply
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          } else {
+            if ($(this).find('.panel-body:contains(">>")').length == 1 && $(this).find('.panel-body:contains(">>>")').length == 1) { //If it only contains 1 "reply" but that reply is actually a board link
+              $(this).find(".panel-body").toggle();
+              $(this).find(".file").toggle();
+            }
+          }
+        });
+        break;
+      case "G":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body:contains(">")').length < 1) { //If it doesn't contain greentext
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          } else {
+            if ($(this).find('.panel-body:contains(">")').length == 1 && $(this).find('.panel-body:contains(">>")').length == 1) { //If it only contains 1 green text but that reply is actually a reply or board link
+              $(this).find(".panel-body").toggle();
+              $(this).find(".file").toggle();
+            }
+          }
+        });
+        break;
+      case "L":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body').text().length < 250) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
+      default:
+        console.log("Filter function broke.");
+    }
+  }
+
+  $("#FIL_R").click(function() {
+    FILTER("R");
+  });
+  $("#FIL_A").click(function() {
+    FILTER("A");
+  });
+  $("#FIL_G").click(function() {
+    FILTER("G");
+  });
+  $("#FIL_L").click(function() {
+    FILTER("L");
   });
 }
