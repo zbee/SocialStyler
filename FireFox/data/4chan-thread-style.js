@@ -31,6 +31,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#globalMessage").remove();
   $("#globalToggle").remove();
   $("#toggleMsgBtn").remove();
+  $(".party-hat").remove();
 
   //Store what the board stuff is (board image, title, subtitle), then remove it.
   let BOARD = [];
@@ -258,7 +259,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".quoteapp").css("max-width", "90%");
       $(".quoteapp").html($("#pc" + $(this).attr("href").replace(/\D/g,'')).html());
       if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
-        $(".quoteapp").css("top", MOUSE_POS.y - $(".quoteapp").height() - 10);
+        $(".quoteapp").css("top", MOUSE_POS.y  + MOUSE_POS.d - $(".quoteapp").height() - 10);
       } else {
         $(".quoteapp").css("top", MOUSE_POS.y + MOUSE_POS.d + 10);
       }
@@ -267,7 +268,6 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       } else {
         $(".quoteapp").css("left", MOUSE_POS.x + 10);
       }
-      console.log(MOUSE_POS.y);
     }).mouseleave(function() {
       $(".quoteapp").remove();
     });
