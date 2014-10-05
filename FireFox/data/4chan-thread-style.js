@@ -126,6 +126,11 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "<li><a id='FIL_F' style='cursor:pointer'>.gif</a></li>" +
     "<li><a id='FIL_W' style='cursor:pointer'>.webm</a></li>" +
     "<li><a id='FIL_I' style='cursor:pointer'>Any image</a></li>" +
+    "<li class='divider'></li>" +
+    "<li role='presentation' class='dropdown-header'>Posts with links</li>" +
+    "<li><a id='FIL_Y' style='cursor:pointer'>Youtube</a></li>" +
+    "<li><a id='FIL_V' style='cursor:pointer'>Vocaroo</a></li>" +
+    "<li><a id='FIL_M' style='cursor:pointer'>Mega.co.nz</a></li>" +
     "</ul></div><br><br>";
   $(".board").prepend(THREAD_APPEND);
 
@@ -357,6 +362,30 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
           }
         });
         break;
+      case "Y":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body:contains("youtube.com")').length < 1 && $(this).find('.panel-body:contains("youtu.be")').length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
+      case "V":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body:contains("vocaroo.com")').length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
+      case "M":
+        $(".panel").each(function() {
+          if ($(this).find('.panel-body:contains("mega.co.nz")').length < 1 && $(this).find('.panel-body:contains("mega co nz")').length < 1) {
+            $(this).find(".panel-body").toggle();
+            $(this).find(".file").toggle();
+          }
+        });
+        break;
       default:
         console.log("Filter function broke.");
     }
@@ -369,4 +398,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#FIL_F").click(function() { FILTER("F"); });
   $("#FIL_W").click(function() { FILTER("W"); });
   $("#FIL_I").click(function() { FILTER("I"); });
+  $("#FIL_Y").click(function() { FILTER("Y"); });
+  $("#FIL_V").click(function() { FILTER("V"); });
+  $("#FIL_M").click(function() { FILTER("M"); });
 }

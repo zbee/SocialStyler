@@ -49,4 +49,3 @@ Bootstrapped theme on 4chan thread (gallery view).
   - [ ] Twitter home page styling
   - [ ] Twitter user page styling
 - [ ] Facebook Styling
-   - [ ] Things and words
