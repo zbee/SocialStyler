@@ -24,6 +24,7 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [X] Image expansion
     - [X] Highlight posts by poster
     - [X] Hover over >>(id here) to show it
+      - [ ] Expand to post while hovering so that they can actually read it
     - [X] Show number of posts by one person
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
       - [ ] Filter gallery mode (.gif and .webm only)

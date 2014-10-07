@@ -223,9 +223,9 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".fileThumb").each(function(INDEX) {
       INDEX += 1;
       if ($(this).attr("href").indexOf(".webm") < 1) {
-        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><img src='" + $(this).attr("href") + "' style='max-height:250px !important;'></a></div>");
+        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><img src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px !important;'></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
       } else {
-        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><a href='" + $(this).attr("href") + "' target='_blank' class='thumbnail'><video src='" + $(this).attr("href") + "' style='max-height:250px;max-width:100%;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video></a></div>");
+        $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><video src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px;max-width:100%;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
       }
       if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
     });
