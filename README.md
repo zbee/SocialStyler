@@ -16,15 +16,13 @@ Bootstrapped theme on 4chan thread (gallery view).
 - [ ] 4chan styling
   - [ ] 4chan home page styling
   - [ ] 4chan board styling
-  - [ ] 80% - 4chan thread styling
+  - [ ] 85% - 4chan thread styling
     - [X] Add gallery mode
-      - [ ] Link images to posts
     - [X] Hide posts in threads
     - [X] Report posts in threads
     - [X] Image expansion
     - [X] Highlight posts by poster
     - [X] Hover over >>(id here) to show it
-      - [ ] Expand to post while hovering so that they can actually read it
     - [X] Show number of posts by one person
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
       - [ ] Filter gallery mode (.gif and .webm only)
@@ -33,7 +31,7 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [ ] Hook up Reply form
     - [ ] Viewing of conversations (when someone says >>(id here) and they have a reply [from that person], add a button to see all replies between these 2 people that are to each other)
     - [ ] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still) (would require input of which numbers do what and if rerolls are allowed)
-    - [ ] Detect boss raid threads and provide link to view raid on [Dragonchan](http://dragonslayer.eu01.aws.af.cm/)
+    - [X] Detect boss raid threads and provide link to view raid on [Dragonchan](http://slayer.pw/)
        - [ ] Add raid mode, which will emulate the Dragonchan site for viewing raid threads
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling

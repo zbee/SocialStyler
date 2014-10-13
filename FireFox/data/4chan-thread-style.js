@@ -4,7 +4,8 @@ $(document).mousemove(function(event) {
   MOUSE_POS.y = event.pageY - $(window).scrollTop();
   MOUSE_POS.d = $(window).scrollTop();
 });
-let loc = window.location;http://boards.4chan.org/b/thread/570675117
+
+let loc = window.location.href;
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
   //Store thread stats, placed here because it's container is removed next.
   let THREAD_STATS = [];
@@ -98,7 +99,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
     //Add sidebar boards area.
     $("sb").append("<div id='BOARDS' class='panel-collapse'><br></div>");
-    
+
   //Add functionality to the sidebar.
   $("#REPLY_BUTTON").click(function() {
     $("#BOARDS").hide();
@@ -114,8 +115,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   });
 
   //Put in thread statistics.
-  let THREAD_APPEND = "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] + 
-    " / <div class='btn-group'><a class='btn btn-xs btn-default disabled' id='st'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si'><i class='fa fa-th-large'></i></a></div>" +
+  $(".board").prepend("<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
+    " / <div class='btn-group' id='tbg'><a class='btn btn-xs btn-default disabled' id='st' title='Thread mode'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si' title='Gallery mode'><i class='fa fa-th-large'></i></a></div>" +
     " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
     "<li><a id='FIL_R' style='cursor:pointer'>Posts with Replies</a></li>" +
     "<li><a id='FIL_A' style='cursor:pointer'>Posts that are Replies</a></li>" +
@@ -131,13 +132,13 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "<li><a id='FIL_Y' style='cursor:pointer'>Youtube</a></li>" +
     "<li><a id='FIL_V' style='cursor:pointer'>Vocaroo</a></li>" +
     "<li><a id='FIL_M' style='cursor:pointer'>Mega.co.nz</a></li>" +
-    "</ul></div><br><br>";
-  $(".board").prepend(THREAD_APPEND);
+    "</ul></div>" +
+    " / <a class='btn btn-xs btn-default' id='dl' title='Download all of the images in this thread'><i class='fa fa-download'></i></a>" +
+    "<br><br>");
 
   //Style Posts here.
   $(".postContainer .post").addClass("panel panel-default");
-  var $blockquote = $(".postContainer blockquote");
-  $blockquote.replaceWith(function () {
+  $(".postContainer blockquote").replaceWith(function () {
     return $('<div/>', {
       class: 'panel-body',
       html: this.innerHTML
@@ -165,49 +166,53 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".postMenuBtn").remove();
 
     //Add a Dropdown menu with the replies to this post.
-    let REPLIES = [];
-    let REPLIESI = '';
+    let R  = [];
+    let RI = '';
     $(".backlink").each(function(INDEX) {
-      REPLIESI = $(this).attr("id");
-      REPLIES[$(this).attr("id")] = [];
-      $(this).children("span").each(function(INDEXD) {
-        REPLIES[REPLIESI][INDEXD] = $(this).html();
-        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("href=\"#p");
-        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][1];
-        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD].split("\"");
-        REPLIES[REPLIESI][INDEXD] = REPLIES[REPLIESI][INDEXD][0];
+      RI = $(this).attr("id");
+      R[$(this).attr("id")] = [];
+      $(this).children("span").each(function(ID) {
+        R[RI][ID] = $(this).html();
+        R[RI][ID] = R[RI][ID].split("href=\"#p");
+        R[RI][ID] = R[RI][ID][1];
+        R[RI][ID] = R[RI][ID].split("\"");
+        R[RI][ID] = R[RI][ID][0];
       });
-      $(this).html("<div class='btn-group pull-right' id='bg" + REPLIESI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + REPLIESI + "' title='" + REPLIES[REPLIESI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + REPLIES[REPLIESI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + REPLIESI + "' style='max-height:400px;overflow:auto;'></ul></div>");
-      REPLIES[REPLIESI].forEach(function(POS) {
-        $("#du" + REPLIESI).append("<li><a href='#pc" + POS + "' class='dropquotelink'>&gt;&gt;" + POS + " <small class='label' style='" + $("#pc" + POS).find(".hand").attr("style") + ";opacity:0.6'>" + $("#pc" + POS).find(".hand").html() + "</small></a></li>");
+      $(this).html("<div class='btn-group pull-right' id='bg" + RI + "'><a class='btn btn-default btn-xs dropdown-toggle' id='" + RI + "' title='" + R[RI].length + " replies' data-toggle='dropdown'><i class='fa fa-share'></i> " + R[RI].length + " <i class='fa fa-caret'></i></a><ul class='dropdown-menu' role='menu' id='du" + RI + "' style='max-height:400px;overflow:auto;'></ul></div>");
+      R[RI].forEach(function(POS) {
+        $("#du" + RI).append("<li><a href='#pc" + POS + "' class='dropquotelink'>&gt;&gt;" + POS + " <small class='label' style='" + $("#pc" + POS).find(".hand").attr("style") + ";opacity:0.6'>" + $("#pc" + POS).find(".hand").html() + "</small></a></li>");
       });
     });
 
     //Reorganize the headings of posts.
-    let HEADERS = [];
+    let H = [];
     $(".panel-heading").each(function(INDEX) {
-      HEADERS[$(this).attr("id")] = [];
-      HEADERS[$(this).attr("id")]["NAME"] = $(this).find(".name").html();
-        HEADERS[$(this).attr("id")]["HAND"] = $(this).find(".hand").html();
-        HEADERS[$(this).attr("id")]["HANDC"] = $(this).find(".hand").attr("style");
-        HEADERS[$(this).attr("id")]["HANDC"] = "background: " + HEADERS[$(this).attr("id")]["HANDC"].split(";")[0].split(":")[1] + ";" + HEADERS[$(this).attr("id")]["HANDC"].split(";")[1];
-      HEADERS[$(this).attr("id")]["DATE"] = $(this).children(".dateTime").html();
-        HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATE"].split("(")[0];
-        HEADERS[$(this).attr("id")]["DATEF"] = HEADERS[$(this).attr("id")]["DATEF"].split("/");
-        HEADERS[$(this).attr("id")]["DATEF"] = "<u>20" + HEADERS[$(this).attr("id")]["DATEF"][2] + "-" + HEADERS[$(this).attr("id")]["DATEF"][1] + "-" + HEADERS[$(this).attr("id")]["DATEF"][0] + " " + HEADERS[$(this).attr("id")]["DATE"].split(")")[1] + "</u>";
-        HEADERS[$(this).attr("id")]["DATE"] = HEADERS[$(this).attr("id")]["DATEF"];
-      HEADERS[$(this).attr("id")]["ID"] = $(this).attr("id").split("pi")[1];
+      ID = $(this).attr("id");
+      H[ID] = [];
+      H[ID]["NAME"] = $(this).find(".name").html();
+        H[ID]["HAND"] = $(this).find(".hand").html();
+        H[ID]["HANDC"] = $(this).find(".hand").attr("style");
+        H[ID]["HANDC"] = "background: " + H[ID]["HANDC"].split(";")[0].split(":")[1] + ";" + H[ID]["HANDC"].split(";")[1];
+      H[ID]["DATE"] = $(this).children(".dateTime").html();
+        H[ID]["DATEF"] = H[ID]["DATE"].split("(")[0];
+        H[ID]["DATEF"] = H[ID]["DATEF"].split("/");
+        H[ID]["DATEF"] = "<u>20" + H[ID]["DATEF"][2] + "-" + H[ID]["DATEF"][1] + "-" + H[ID]["DATEF"][0] + " " + H[ID]["DATE"].split(")")[1] + "</u>";
+        H[ID]["DATE"] = H[ID]["DATEF"];
+      H[ID]["ID"] = ID.split("pi")[1];
       let HEADER = "";
-      HEADER = HEADERS[$(this).attr("id")]["DATE"] + " by " + HEADERS[$(this).attr("id")]["NAME"] +  " (ID: <span class='hand label' style='" + HEADERS[$(this).attr("id")]["HANDC"] + ";cursor:pointer;'>" + HEADERS[$(this).attr("id")]["HAND"] + "</span>) No. <a href='javascript:;'>" + HEADERS[$(this).attr("id")]["ID"] + "</a>" + 
-        (($(this).children(".backlink").html() != null) ? $(this).children(".backlink").html() : "") + 
-        "<a class='btn btn-default btn-xs pull-right' title='Hide Post' onClick='$(\"#p" + HEADERS[$(this).attr("id")]["ID"] + " .panel-body\").toggle();$(\"#p" + HEADERS[$(this).attr("id")]["ID"] + " .file\").toggle();'><i class='fa fa-eye-slash'></i></a></div>" +
-        "<a class='btn btn-default btn-xs pull-right' title='Report Post' target='_blank' href='https://sys.4chan.org/b/imgboard.php?mode=report&no=" + HEADERS[$(this).attr("id")]["ID"] + "'><i class='fa fa-exclamation-circle'></i></a></div>";
+      HEADER = H[ID]["DATE"] + " by " + H[ID]["NAME"] + " (ID: <span class='hand label' style='" + H[ID]["HANDC"] + ";cursor:pointer;'>" + H[ID]["HAND"] + "</span>) No. <a href='javascript:;'>" + H[ID]["ID"] + "</a>" +
+        (($(this).children(".backlink").html() != null) ? $(this).children(".backlink").html() : "") +
+        "<a class='btn btn-default btn-xs pull-right' title='Hide Post' onClick='$(\"#p" + H[ID]["ID"] + " .panel-body\").toggle();$(\"#p" + H[ID]["ID"] + " .file\").toggle();'><i class='fa fa-eye-slash'></i></a></div>" +
+        "<a class='btn btn-default btn-xs pull-right' title='Report Post' target='_blank' href='https://sys.4chan.org/b/imgboard.php?mode=report&no=" + H[ID]["ID"] + "'><i class='fa fa-exclamation-circle'></i></a></div>";
       $(this).html(HEADER);
     });
 
     //Style OP's post to be the same as replies.
     let OP_IMAGE = $(".op .file").html();
     let OP_TEXT = $(".op .panel-body").html();
+    if ($('.op .panel-body:contains("difficulty@")').length > 0) {
+      $("#tbg").append("<a class='btn btn-xs btn-default' href='http://slayer.pw/" + window.location.href.split("/")[window.location.href.split("/").length - 1].split("#")[0] + "' title='View this raid on dragonchan'><i class='fa fa-shield'></i></a>");
+    }
     $(".op .file").remove();
     $(".op .panel-body").remove();
     $(".op").append("<div class='file col-sm-4 pull-right text-right'></div>");
@@ -217,7 +222,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".opContainer").addClass("replyContainer").removeClass("opContainer");
     $(".op").addClass("reply o-p").removeClass("op");
 
-    //Make gallery view.
+    //Make gallery mode.
     $(".board").append("<div class='imgThread col-md-10'></div>");
     $(".imgThread").hide();
     $(".fileThumb").each(function(INDEX) {
@@ -243,15 +248,17 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(this).attr("data-handle", $(this).html());
       HAND_COUNT[$(this).html()] = (HAND_COUNT[$(this).html()] != null) ? HAND_COUNT[$(this).html()] + 1 : 1;
     });
-      //Number of posts a poster has in thread.
-      $(".hand").each(function() {
-        HAND_SAY[$(this).html()] = (HAND_COUNT[$(this).html()] > 1) ? ((HAND_COUNT[$(this).html()] > 100) ? " 100+ posts" : " " + HAND_COUNT[$(this).html()]) + " posts" : "";
-        $(this).after(HAND_SAY[$(this).html()]);
-      });
+
     $(".hand").click(function() {
       $(".panel[data-handle!='" + $(this).attr("data-handle") + "']").removeClass("panel-info");
       $(".panel[data-handle='" + $(this).attr("data-handle") + "']").toggleClass("panel-info");
     });
+
+      //Number of posts a poster has in thread.
+      $(".hand").each(function() {
+        HAND_SAY[$(this).html()] = (HAND_COUNT[$(this).html()] > 1) ? ((HAND_COUNT[$(this).html()] > 99) ? " 99+ posts" : " " + HAND_COUNT[$(this).html()]) + " posts" : "";
+        $(this).after(HAND_SAY[$(this).html()]);
+      });
 
       //Highlight posts by OP by default.
       $(".panel[data-handle='" + $(".o-p").attr("data-handle") + "']").addClass("panel-info");
@@ -263,6 +270,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".quoteapp").css("z-index", "999999");
       $(".quoteapp").css("max-width", "90%");
       $(".quoteapp").html($("#pc" + $(this).attr("href").replace(/\D/g,'')).html());
+      $(".quoteapp").find(".panel-body").show();
+      $(".quoteapp").find(".file").show();
       if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
         $(".quoteapp").css("top", MOUSE_POS.y  + MOUSE_POS.d - $(".quoteapp").height() - 10);
       } else {
@@ -293,8 +302,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#si").click(function() {
     $(".thread").hide();
     $(".imgThread").show();
-    $("#si").addClass("disabled");
     $("#st").removeClass("disabled");
+    $("#si").addClass("disabled");
   });
 
   //Add thread filtering to thread view.
