@@ -5,6 +5,10 @@ $(document).mousemove(function(event) {
   MOUSE_POS.d = $(window).scrollTop();
 });
 
+function endsWith(str, suffix) {
+  return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
 let loc = window.location.href;
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
   //Store thread stats, placed here because it's container is removed next.
@@ -114,7 +118,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#REPLY_BUTTON").removeClass("disabled");
   });
 
-  //Put in thread statistics.
+  //Put in header buttons/information.
   $(".board").prepend("<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
     " / <div class='btn-group' id='tbg'><a class='btn btn-xs btn-default disabled' id='st' title='Thread mode'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si' title='Gallery mode'><i class='fa fa-th-large'></i></a></div>" +
     " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
@@ -127,13 +131,19 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "<li><a id='FIL_F' style='cursor:pointer'>.gif</a></li>" +
     "<li><a id='FIL_W' style='cursor:pointer'>.webm</a></li>" +
     "<li><a id='FIL_I' style='cursor:pointer'>Any image</a></li>" +
-    "<li class='divider'></li>" +
-    "<li role='presentation' class='dropdown-header'>Posts with links</li>" +
-    "<li><a id='FIL_Y' style='cursor:pointer'>Youtube</a></li>" +
-    "<li><a id='FIL_V' style='cursor:pointer'>Vocaroo</a></li>" +
-    "<li><a id='FIL_M' style='cursor:pointer'>Mega.co.nz</a></li>" +
     "</ul></div>" +
     " / <a class='btn btn-xs btn-default' id='dl' title='Download all of the images in this thread'><i class='fa fa-download'></i></a>" +
+    " / <a class='btn btn-xs btn-default' id='get' title='Manage a get thread' data-toggle='modal' data-target='#getMod'><i class='fa fa-gift'></i></a>" +
+
+    "<div class='modal fade' id='getMod' tabindex='-1' role='dialog' aria-labelledby='getModLab' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" +
+    "<h4 class='modal-title' id='getModLab'>Manage a Get thread</h4>" +
+    "</div><div class='modal-body' id='getHolder'>" +
+    "<p>Enter the IDs that win something ('96 18 71 get a free steam game') below (separated by a comma, spaces are ignored) and we'll tell you which ones have not yet been rolled.</p>" +
+    "<div class='form-group'><label for='getIDs'>The IDs that win</label><input type='text' class='form-control' id='getIDs' placeholder='96, 18, 71'></div>" +
+    "</div><div class='modal-footer'>" +
+    "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button><button type='button' id='getSearch' class='btn btn-primary'>Search thread</button>" +
+    "</div></div></div></div>" +
+
     "<br><br>");
 
   //Style Posts here.
@@ -304,6 +314,47 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".imgThread").show();
     $("#st").removeClass("disabled");
     $("#si").addClass("disabled");
+  });
+
+  //Add get search functionality. (doesn't currently check if the person has already rolled)
+  var table = '';
+  $("#getSearch").click(function() {
+    $("#getTable").remove();
+    var IDs = [];
+    $(".postContainer").each(function() {
+      IDs.push($(this).attr("id").split("pc")[1]);
+    });
+    var res = [];
+    var gets = $("#getIDs").val().replace(/ /g,'').split(",");
+    for (var i = 0; i < gets.length; i++) {
+      IDs.forEach(function(entry) {
+        if (endsWith(entry, gets[i]) === true) {
+          if (res[gets[i]] == undefined) { res[gets[i]] = []; }
+          res[gets[i]].push({roll:gets[i],reply:entry}); //Could push {roll:entry, reply:e} or whatever (would need the ID of the poster to for checking if previously rolled)
+        }
+      });
+    }
+    var replies = [];
+    gets.forEach(function(entry) {
+      if (res[entry] !== undefined) {
+        for (var x = 0; x < res[entry].length; x++) {
+          if (replies[entry] == undefined) { replies[entry] = []; }
+          if (replies[entry].length < 900) {
+            replies[entry] += "<u><a class='text-danger' onClick='$(\"#getMod\").modal(\"hide\")' href='#pc" + res[entry][x].reply + "'>>>" + res[entry][x].reply + "</a></u> ";
+          }
+        }
+      }
+    });
+    table = "<table id='getTable' class='table table-bordered table-responsive'><tr><th>Get Rolls</th><th>Status</th></tr>";
+    gets.forEach(function(entry) { 
+      if (res[entry] !== undefined) {
+        table += "<tr><td>" + entry + "</td><td class='text-danger'>Already rolled (<span>" + replies[entry].slice(0,-1) +"</span>)</td></tr>"; //Link to the reply that rolled it
+      } else {
+        table += "<tr><td>" + entry + "</td><td class='text-success'>Not yet rolled!</td></tr>";
+      }
+    });
+    table += "</table>";
+    $("#getHolder").append(table);
   });
 
   //Add thread filtering to thread view.
