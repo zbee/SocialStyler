@@ -24,13 +24,13 @@ Bootstrapped theme on 4chan thread (gallery view).
     - [X] Highlight posts by poster
     - [X] Hover over >>(id here) to show it
     - [X] Show number of posts by one person
+    - [X] Download all images in a thread (in a .tar file)
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
       - [ ] Filter gallery mode (.gif and .webm only)
     - [ ] Add auto-loading of new replies
-      - [ ] When thread 404s, offer to combine all images into a .zip (since 4bros can only do active threads)
+      - [ ] When thread 404s, offer to download all images in a .tar (since 4bros can only do active threads)
     - [ ] Hook up Reply form
-    - [ ] Viewing of conversations (when someone says >>(id here) and they have a reply [from that person], add a button to see all replies between these 2 people that are to each other)
-    - [ ] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still) (would require input of which numbers do what and if rerolls are allowed)
+    - [X] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still) (would require input of which numbers do what and if rerolls are allowed)
     - [X] Detect boss raid threads and provide link to view raid on [Dragonchan](http://slayer.pw/)
        - [ ] Add raid mode, which will emulate the Dragonchan site for viewing raid threads
 - [ ] Reddit styling

@@ -1,4 +1,6 @@
+let IMAGES = [];
 let MOUSE_POS = { x: -1, y: -1 };
+let CUR_POS = 0;
 $(document).mousemove(function(event) {
   MOUSE_POS.x = event.pageX;
   MOUSE_POS.y = event.pageY - $(window).scrollTop();
@@ -11,6 +13,10 @@ function endsWith(str, suffix) {
 
 let loc = window.location.href;
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
+  let THREAD_ID = $("link[rel='canonical']").attr("href").split("/");
+  THREAD_ID = THREAD_ID[(THREAD_ID.length-2)];
+  console.log(THREAD_ID);
+
   //Store thread stats, placed here because it's container is removed next.
   let THREAD_STATS = [];
   THREAD_STATS[0] = ($("span[data-tip*='Replies']").html() != null) ? $("span[data-tip*='Replies']").html() : $(".thread-stats em").html();
@@ -40,7 +46,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Store what the board stuff is (board image, title, subtitle), then remove it.
   let BOARD = [];
-  BOARD["BANNER"] = "//s.4cdn.org/image/title/" + $("#bannerCnt").attr("data-src");
+  BOARD["BANNER"] = "https://s.4cdn.org/image/title/" + $("#bannerCnt").attr("data-src");
   BOARD["TITLE"] = $(".boardTitle").html();
   BOARD["SUBTITLE"] = $(".boardSubtitle").html();
   $(".boardBanner").remove();
@@ -68,12 +74,12 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("script").remove();
 
   //Include Bootstrap CSS and FontAwesome CSS
-  $('head').append('<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
-  $('head').append('<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
+  $('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
+  $('head').append('<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
 
   //Include JQuery and Bootstrap JS (?)
   $("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>");
-  $("body").append("<script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
+  $("body").append("<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
 
   //Convert the thread container to the bootstrap equivalent.
   $(".thread").addClass("col-md-10");
@@ -132,7 +138,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "<li><a id='FIL_W' style='cursor:pointer'>.webm</a></li>" +
     "<li><a id='FIL_I' style='cursor:pointer'>Any image</a></li>" +
     "</ul></div>" +
-    " / <a class='btn btn-xs btn-default' id='dl' title='Download all of the images in this thread'><i class='fa fa-download'></i></a>" +
+    " / <a id='dl' class='btn btn-xs btn-default' title='Download all of the images in this thread' href=''><i class='fa fa-download'></i></a>" +
     " / <a class='btn btn-xs btn-default' id='get' title='Manage a get thread' data-toggle='modal' data-target='#getMod'><i class='fa fa-gift'></i></a>" +
 
     "<div class='modal fade' id='getMod' tabindex='-1' role='dialog' aria-labelledby='getModLab' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" +
@@ -165,6 +171,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(this).children("img").remove();
       $(this).append("<video src='" + $(this).attr("href") + "' style='max-width:125px;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video>");
     }
+    IMAGES.push(($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-2] + "/" + ($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-1]);
   });
   var posts = $(".postContainer").length - 1;
   $(".postContainer").each(function(index) {
@@ -189,6 +196,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("a[title='Link to this post']").remove();
   $("input[type='checkbox']").remove();
   $(".postMenuBtn").remove();
+  $("#dl").attr("href", "http://beta.zbee.me/ssdl?urls=" + JSON.stringify(IMAGES) + "&n=" + THREAD_ID);
 
     //Add a Dropdown menu with the replies to this post.
     let R  = [];
@@ -305,8 +313,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Adding functionality to posts.
   $(".postContainer .file img, .file video").mouseenter(function() {
     $(this).attr("style", "width:100%;");
+    CUR_POS = $(window).scrollTop();
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
+    $(window).scrollTop(CUR_POS);
   });
 
   $("#st").click(function() {
