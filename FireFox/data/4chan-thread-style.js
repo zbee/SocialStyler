@@ -15,7 +15,6 @@ let loc = window.location.href;
 if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]*)?/.test(loc)) {
   let THREAD_ID = $("link[rel='canonical']").attr("href").split("/");
   THREAD_ID = THREAD_ID[(THREAD_ID.length-2)];
-  console.log(THREAD_ID);
 
   //Store thread stats, placed here because it's container is removed next.
   let THREAD_STATS = [];
@@ -26,7 +25,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Store ReCAPTCHA image.
   let RECAPTCHA = $("#recaptcha_image").html();
 
-  //Get rid of navigation.
+  //Get rid of 4chan navigation and header stuff.
   $("#boardNavDesktop").remove();
   $("#boardNavDesktopFoot").remove();
   $("#boardNavMobile").remove();
@@ -54,18 +53,16 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Get rid of <hr> tags on page.
   $("hr").remove();
 
-  //Get rid of all of the ads and the ad pleas ([Advertise on 4chan]).
+  //Get rid of all of the ads and the ad pleas ('Advertise on 4chan').
   $(".ad-cnt").remove();
   $(".ad-plea").remove();
 
   //Store the blotter information (recent blog posts), then remove it
   let BLOTTER = [];
-  BLOTTER[0] = $("#blotter-msgs tr:nth-child(1) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(1) td:nth-child(2)").html();
-  BLOTTER[1] = $("#blotter-msgs tr:nth-child(2) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html();
-  BLOTTER[2] = $("#blotter-msgs tr:nth-child(3) td:nth-child(1)").html() + "~$" + $("#blotter-msgs tr:nth-child(3) td:nth-child(2)").html();
+  BLOTTER[0] = [$("#blotter-msgs tr:nth-child(1) td:nth-child(1)").html(), $("#blotter-msgs tr:nth-child(1) td:nth-child(2)").html()];
+  BLOTTER[1] = [$("#blotter-msgs tr:nth-child(2) td:nth-child(1)").html(), $("#blotter-msgs tr:nth-child(2) td:nth-child(2)").html()];
+  BLOTTER[2] = [$("#blotter-msgs tr:nth-child(3) td:nth-child(1)").html(), $("#blotter-msgs tr:nth-child(3) td:nth-child(2)").html()];
   $("#blotter").remove();
-
-  //At this point, we only have the posts, now for the reformatting.
 
   //Remove current stylesheets.
   $('link[rel*="stylesheet"]').remove();
@@ -73,13 +70,13 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Remove all Javascripts.
   $("script").remove();
 
-  //Include Bootstrap CSS and FontAwesome CSS
+  //Include Bootstrap and FontAwesome CSS.
   $('head').append('<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet"/>');
   $('head').append('<link href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>');
 
-  //Include JQuery and Bootstrap JS (?)
-  $("body").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>");
-  $("body").append("<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
+  //Include JQuery and Bootstrap JS.
+  $("head").append("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>");
+  $("head").append("<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
 
   //Convert the thread container to the bootstrap equivalent.
   $(".thread").addClass("col-md-10");
@@ -89,9 +86,9 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#sb").append("<h1>" + BOARD["TITLE"] + "</h1>");
   $("#sb").append(BOARD["SUBTITLE"]);
   $("#sb").append("<hr>");
-  //$("#sb").append("<img src='" + BOARD["BANNER"] + "' width='100%' />");
+  $("#sb").append("<img src='" + BOARD["BANNER"] + "' width='100%'><br><br>");
   $("#sb").append("<div id='blot' class='text-left'></div>");
-  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[0].split("~$")[0] + "'>"  + BLOTTER[0].split("~$")[1] + "</div>");
+  $("#blot").append("<div class='well well-sm' title='"  + BLOTTER[0][0] + "'>"  + BLOTTER[0][1] + "</div>");
 
   $("#sb").append("<hr>");
   $("#sb").append("<div class='btn-group btn-group-justified'></div>");
@@ -244,7 +241,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     let OP_IMAGE = $(".op .file").html();
     let OP_TEXT = $(".op .panel-body").html();
     if ($('.op .panel-body:contains("difficulty@")').length > 0) {
-      $("#tbg").append("<a class='btn btn-xs btn-default' href='http://slayer.pw/" + window.location.href.split("/")[window.location.href.split("/").length - 1].split("#")[0] + "' title='View this raid on dragonchan'><i class='fa fa-shield'></i></a>");
+      $("#tbg").append("<a class='btn btn-xs btn-default' href='http://slayer.pw/" + THREAD_ID + "' title='View this raid on dragonchan'><i class='fa fa-shield'></i></a>");
     }
     $(".op .file").remove();
     $(".op .panel-body").remove();
@@ -331,6 +328,41 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#st").removeClass("disabled");
     $("#si").addClass("disabled");
   });
+
+  //Check to see if the thread has 404'd yet or not
+  window.setInterval(function(){
+    $.ajax(
+      window.location.href,
+      {
+        statusCode: {
+          404: function() {
+            $("body").append(
+              "<div class='modal fade' id='err404Mod' tabindex='1' role='dialog' aria-labelledby='err404ModLab' aria-hidden='false'>" +
+                "<div class='modal-dialog'>" +
+                  "<div class='modal-content'>" +
+                    "<div class='modal-header'>" +
+                      "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" +
+                      "<h4 class='modal-title' id='err404ModLab'>This thread died</h4>" +
+                    "</div>" +
+                    "<div class='modal-body' id='err404Holder'>" +
+                      "<p>The thread 404'd.<br><br>If you would like to donwload all of the images that weren't banned, you can do so still.</p>" +
+                    "</div>" +
+                    "<div class='modal-footer'>" +
+                      "<button type='button' class='btn btn-default' data-dismiss='modal'>Close modal</button><a id='err404DL' class='btn btn-primary' href='http://beta.zbee.me/ssdl?urls=" + JSON.stringify(IMAGES) + "&n=" + THREAD_ID + "'>Download all images</a>" +
+                    "</div>" +
+                  "</div>" +
+                "</div>" +
+              "</div>"
+            );
+            $('#err404Mod').modal('show');
+          },
+          200: function() {
+            console.log(THREAD_ID + ": Thread still alive.");
+          }
+        }
+      }
+    );
+  }, 60000);
 
   //Add get search functionality. (doesn't currently check if the person has already rolled)
   var table = '';

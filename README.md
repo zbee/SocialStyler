@@ -16,23 +16,22 @@ Bootstrapped theme on 4chan thread (gallery view).
 - [ ] 4chan styling
   - [ ] 4chan home page styling
   - [ ] 4chan board styling
-  - [ ] 85% - 4chan thread styling
+  - [ ] 90% - 4chan thread styling
     - [X] Add gallery mode
     - [X] Hide posts in threads
     - [X] Report posts in threads
     - [X] Image expansion
     - [X] Highlight posts by poster
     - [X] Hover over >>(id here) to show it
+      - [ ] Fix hovering over >>(id here)'s near the sides
     - [X] Show number of posts by one person
-    - [X] Download all images in a thread (in a .tar file)
+    - [X] Download all images in a thread
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)
-      - [ ] Filter gallery mode (.gif and .webm only)
-    - [ ] Add auto-loading of new replies
-      - [ ] When thread 404s, offer to download all images in a .tar (since 4bros can only do active threads)
-    - [ ] Hook up Reply form
-    - [X] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still) (would require input of which numbers do what and if rerolls are allowed)
+    - [X] When thread 404s, offer to download all images (since 4bros can only do active threads)
+    - [X] Managing get threads ("14, 15, and 16 get a steam game" > scan to see which ones are available still)
     - [X] Detect boss raid threads and provide link to view raid on [Dragonchan](http://slayer.pw/)
-       - [ ] Add raid mode, which will emulate the Dragonchan site for viewing raid threads
+    - [ ] Add auto-loading of new replies
+    - [ ] Hook up Reply form
 - [ ] Reddit styling
   - [ ] Reddit subreddit/home page styling
   - [ ] 25% - Reddit comment thread styling
