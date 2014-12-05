@@ -286,20 +286,24 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       $(".board").append("<div class='quoteapp'></div>");
       $(".quoteapp").css("position", "absolute");
       $(".quoteapp").css("z-index", "999999");
-      $(".quoteapp").css("max-width", "90%");
+      $(".quoteapp").css("max-width", "70%");
       $(".quoteapp").html($("#pc" + $(this).attr("href").replace(/\D/g,'')).html());
       $(".quoteapp").find(".panel").css('box-shadow', '0px 0px 15px 3px rgba(125,125,125,0.75)');
       $(".quoteapp").find(".panel").css('-moz-box-shadow', '0px 0px 15px 3px rgba(125,125,125,0.75)');
       $(".quoteapp").find(".panel").css('-webkit-box-shadow', '0px 0px 15px 3px rgba(125,125,125,0.75)');
       $(".quoteapp").find(".panel-body").show();
       $(".quoteapp").find(".file").show();
-      if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards:
+      if (MOUSE_POS.y + $(".quoteapp").height() > $(window).height()) { //If quote would extend downwards.
         $(".quoteapp").css("top", MOUSE_POS.y  + MOUSE_POS.d - $(".quoteapp").height() - 10);
       } else {
         $(".quoteapp").css("top", MOUSE_POS.y + MOUSE_POS.d + 10);
       }
-      if (MOUSE_POS.x + $(".quoteapp").width() > $(window).width()) { //If quote would extend right-wards:
-        $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
+      if (MOUSE_POS.x + $(".quoteapp").width() > $(window).width()) { //If quote would extend right-wards.
+        if (MOUSE_POS.x - $(".quoteapp").width() - 10 > 0) {
+          $(".quoteapp").css("left", MOUSE_POS.x - $(".quoteapp").width() - 10);
+        } else {
+          $(".quoteapp").css("left", 10);
+        }
       } else {
         $(".quoteapp").css("left", MOUSE_POS.x + 10);
       }
@@ -329,32 +333,26 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#si").addClass("disabled");
   });
 
-  //Check to see if the thread has 404'd yet or not
+  //Check to see if the thread has 404'd yet or not.
   window.setInterval(function(){
     $.ajax(
       window.location.href,
       {
         statusCode: {
           404: function() {
-            $("body").append(
-              "<div class='modal fade' id='err404Mod' tabindex='1' role='dialog' aria-labelledby='err404ModLab' aria-hidden='false'>" +
-                "<div class='modal-dialog'>" +
-                  "<div class='modal-content'>" +
-                    "<div class='modal-header'>" +
-                      "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" +
-                      "<h4 class='modal-title' id='err404ModLab'>This thread died</h4>" +
-                    "</div>" +
-                    "<div class='modal-body' id='err404Holder'>" +
-                      "<p>The thread 404'd.<br><br>If you would like to donwload all of the images that weren't banned, you can do so still.</p>" +
-                    "</div>" +
-                    "<div class='modal-footer'>" +
-                      "<button type='button' class='btn btn-default' data-dismiss='modal'>Close modal</button><a id='err404DL' class='btn btn-primary' href='http://beta.zbee.me/ssdl?urls=" + JSON.stringify(IMAGES) + "&n=" + THREAD_ID + "'>Download all images</a>" +
+            if ($("#err404").length == 0) {
+              let add = 
+                "<div class='row'>" +
+                  "<div class='col-xs-12 col-md-6 col-md-offset-3'>" +
+                    "<div class='alert alert-danger text-center' id='err404'>" +
+                      "<p><b>This thread has 404'd.</b><br><br>If you would like to download all of the images that weren't banned, you can still do so since you're using this glorious 4chan extenstion.</p><br><br>" +
+                      "<a href='http://beta.zbee.me/ssdl?urls=" + JSON.stringify(IMAGES) + "&n=" + THREAD_ID + "' class='btn btn-block btn-danger'>Download images</a>" +
                     "</div>" +
                   "</div>" +
-                "</div>" +
-              "</div>"
-            );
-            $('#err404Mod').modal('show');
+                "</div>";
+              $(".thread").prepend(add);
+              $(".thread").append(add);
+            }
           },
           200: function() {
             console.log(THREAD_ID + ": Thread still alive.");
@@ -362,7 +360,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
         }
       }
     );
-  }, 60000);
+  }, 30000);
 
   //Add get search functionality. (doesn't currently check if the person has already rolled)
   var table = '';
