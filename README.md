@@ -16,14 +16,13 @@ Bootstrapped theme on 4chan thread (gallery view).
 - [ ] 4chan styling
   - [ ] 4chan home page styling
   - [ ] 4chan board styling
-  - [ ] 90% - 4chan thread styling
+  - [ ] 95% - 4chan thread styling
     - [X] Add gallery mode
     - [X] Hide posts in threads
     - [X] Report posts in threads
     - [X] Image expansion
     - [X] Highlight posts by poster
     - [X] Hover over >>(id here) to show it
-      - [ ] Fix hovering over >>(id here)'s near the sides
     - [X] Show number of posts by one person
     - [X] Download all images in a thread
     - [X] Filtering of threads (posts with replies, posts that are replies, posts with images, posts with greentext, long posts, etc.)

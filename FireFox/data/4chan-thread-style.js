@@ -1,4 +1,5 @@
 let IMAGES = [];
+let IMG_LOADED = false;
 let MOUSE_POS = { x: -1, y: -1 };
 let CUR_POS = 0;
 $(document).mousemove(function(event) {
@@ -167,7 +168,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "</div><div class='modal-footer'>" +
     "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button><button type='button' id='getSearch' class='btn btn-primary'>Search thread</button>" +
     "</div></div></div></div>" +
-    "<br><br>");
+    "<br><br>"
+  );
 
   //Style Posts here.
   $(".postContainer .post").addClass("panel panel-default");
@@ -337,7 +339,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".imgThread").show();
     $("#st").removeClass("disabled");
     $("#si").addClass("disabled");
-    if ($(".imgThread").html().length < 100) {
+    if (IMG_LOADED == false) {
       //Make gallery mode once all of the images have IDs set.
       $(".board").append("<div class='imgThread col-md-10'></div>");
       $(".imgThread").hide();
@@ -350,6 +352,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
         }
         if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
       });
+      IMG_LOADED = true;
     }
   });
 
