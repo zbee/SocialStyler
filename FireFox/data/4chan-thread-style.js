@@ -83,6 +83,9 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Add sidebar, before the thread container.
   $("body").prepend("<div class='col-md-2 text-center' id='sb'></div>");
+  $("#sb").append("<a id='csb' style='float:right;' class='btn btn-default btn-xs' title='Collapse Sidebar'><i class='fa fa-angle-left'></i></a>");
+  $("body").prepend("<a id='esb' style='float:left;' class='btn btn-default btn-xs' title='Expand Sidebar'><i class='fa fa-angle-right'></i></a>");
+  $("#esb").hide();
   $("#sb").append("<h1>" + BOARD["TITLE"] + "</h1>");
   $("#sb").append(BOARD["SUBTITLE"]);
   $("#sb").append("<hr>");
@@ -120,9 +123,27 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#BOARDS_BUTTON").addClass("disabled");
     $("#REPLY_BUTTON").removeClass("disabled");
   });
+  $("#csb").click(function() {
+    $("#sb").hide();
+    $(".thread").removeClass("col-md-10");
+    $(".thread").addClass("col-md-12");
+    $(".imgThread").removeClass("col-md-10");
+    $(".imgThread").addClass("col-md-12");
+    $("#esb").show();
+  });
+  $("#esb").click(function() {
+    $("#sb").show();
+    $(".thread").removeClass("col-md-12");
+    $(".thread").addClass("col-md-10");
+    $(".imgThread").removeClass("col-md-12");
+    $(".imgThread").addClass("col-md-10");
+    $("#esb").hide();
+  });
 
   //Put in header buttons/information.
-  $(".board").prepend("<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
+  $(".board").prepend("<div id='inf'></div>");
+  $("#inf").append(
+    "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
     " / <div class='btn-group' id='tbg'><a class='btn btn-xs btn-default disabled' id='st' title='Thread mode'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si' title='Gallery mode'><i class='fa fa-th-large'></i></a></div>" +
     " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
     "<li><a id='FIL_R' style='cursor:pointer'>Posts with Replies</a></li>" +
@@ -135,7 +156,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "<li><a id='FIL_W' style='cursor:pointer'>.webm</a></li>" +
     "<li><a id='FIL_I' style='cursor:pointer'>Any image</a></li>" +
     "</ul></div>" +
-    " / <a id='dl' class='btn btn-xs btn-default' title='Download all of the images in this thread' href=''><i class='fa fa-download'></i></a>" +
+    " / <a id='dl' class='disabled btn btn-xs btn-default' title='Download all of the images in this thread' href=''><i class='fa fa-download'></i></a>" +
     " / <a class='btn btn-xs btn-default' id='get' title='Manage a get thread' data-toggle='modal' data-target='#getMod'><i class='fa fa-gift'></i></a>" +
 
     "<div class='modal fade' id='getMod' tabindex='-1' role='dialog' aria-labelledby='getModLab' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>&times;</span><span class='sr-only'>Close</span></button>" +
@@ -146,7 +167,6 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     "</div><div class='modal-footer'>" +
     "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button><button type='button' id='getSearch' class='btn btn-primary'>Search thread</button>" +
     "</div></div></div></div>" +
-
     "<br><br>");
 
   //Style Posts here.
@@ -170,23 +190,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     }
     IMAGES.push(($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-2] + "/" + ($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-1]);
   });
-  var posts = $(".postContainer").length - 1;
-  $(".postContainer").each(function(index) {
-    $(this).find("img").attr("id", $(this).attr("id").split("pc")[1]);
-    if (index == posts) {
-      //Make gallery mode once all of the images have IDs set.
-      $(".board").append("<div class='imgThread col-md-10'></div>");
-      $(".imgThread").hide();
-      $(".fileThumb").each(function(INDEX) {
-        INDEX += 1;
-        if ($(this).attr("href").indexOf(".webm") < 1) {
-          $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><img src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px !important;'></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
-        } else {
-          $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><video src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px;max-width:100%;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
-        }
-        if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
-      });
-    }
+  $(".file").each(function(index) {
+    $(this).find("img").attr("id", $(this).attr("id").replace(/\D/g,''));
   });
   $(".postContainer .file img").attr("style", "max-width:125px;");
   $(".postContainer .sideArrows").remove();
@@ -194,6 +199,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("input[type='checkbox']").remove();
   $(".postMenuBtn").remove();
   $("#dl").attr("href", "http://beta.zbee.me/ssdl?urls=" + JSON.stringify(IMAGES) + "&n=" + THREAD_ID);
+  $("#dl").removeClass("disabled");
 
     //Add a Dropdown menu with the replies to this post.
     let R  = [];
@@ -331,6 +337,20 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".imgThread").show();
     $("#st").removeClass("disabled");
     $("#si").addClass("disabled");
+    if ($(".imgThread").html().length < 100) {
+      //Make gallery mode once all of the images have IDs set.
+      $(".board").append("<div class='imgThread col-md-10'></div>");
+      $(".imgThread").hide();
+      $(".fileThumb").each(function(INDEX) {
+        INDEX += 1;
+        if ($(this).attr("href").indexOf(".webm") < 1) {
+          $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><img src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px !important;'></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
+        } else {
+          $(".imgThread").append("<div class='col-xs-6 col-sm-3'><div class='thumbnail text-center'><a href='" + $(this).attr("href") + "' target='_blank'><video src='" + $(this).attr("href") + "' id='" + $(this).find("img").attr("id") + "' style='max-height:250px;max-width:100%;' onMouseOver='this.play()' onMouseOut='this.pause()' onclick='this.pause()' loop></video></a> <a class='quotelink' href='#p" + $(this).find("img").attr("id") + "' onClick='$(\".thread\").show();$(\".imgThread\").hide();$(\"#st\").addClass(\"disabled\");$(\"#si\").removeClass(\"disabled\");'>>>" + $(this).find("img").attr("id") + "</a></div></div>");
+        }
+        if (INDEX % 4 == 0) { $('.imgThread').append("<div class='row'></div>"); }
+      });
+    }
   });
 
   //Check to see if the thread has 404'd yet or not.
