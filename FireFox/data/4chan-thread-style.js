@@ -2,6 +2,7 @@ let IMAGES = [];
 let IMG_LOADED = false;
 let MOUSE_POS = { x: -1, y: -1 };
 let CUR_POS = 0;
+let SIDEBAR_OUT = false;
 $(document).mousemove(function(event) {
   MOUSE_POS.x = event.pageX;
   MOUSE_POS.y = event.pageY - $(window).scrollTop();
@@ -80,13 +81,13 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("head").append("<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>");
 
   //Convert the thread container to the bootstrap equivalent.
-  $(".thread").addClass("col-md-10");
+  $(".thread").addClass("col-md-12");
 
   //Add sidebar, before the thread container.
   $("body").prepend("<div class='col-md-2 text-center' id='sb'></div>");
+  $("#sb").hide();
   $("#sb").append("<a id='csb' style='float:right;' class='btn btn-default btn-xs' title='Collapse Sidebar'><i class='fa fa-angle-left'></i></a>");
   $("body").prepend("<a id='esb' style='float:left;' class='btn btn-default btn-xs' title='Expand Sidebar'><i class='fa fa-angle-right'></i></a>");
-  $("#esb").hide();
   $("#sb").append("<h1>" + BOARD["TITLE"] + "</h1>");
   $("#sb").append(BOARD["SUBTITLE"]);
   $("#sb").append("<hr>");
@@ -143,6 +144,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Put in header buttons/information.
   $(".board").prepend("<div id='inf'></div>");
+  $(".board").append("<div class='imgThread col-md-10'></div>");
+  $(".imgThread").hide();
   $("#inf").append(
     "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
     " / <div class='btn-group' id='tbg'><a class='btn btn-xs btn-default disabled' id='st' title='Thread mode'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si' title='Gallery mode'><i class='fa fa-th-large'></i></a></div>" +
@@ -322,10 +325,10 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Adding functionality to posts.
   $(".postContainer .file img, .file video").mouseenter(function() {
     $(this).attr("style", "width:100%;");
-    CUR_POS = $(window).scrollTop();
+    //CUR_POS = $(window).scrollTop();
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
-    $(window).scrollTop(CUR_POS);
+    //$(window).scrollTop(CUR_POS);
   });
 
   $("#st").click(function() {
@@ -340,9 +343,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $("#st").removeClass("disabled");
     $("#si").addClass("disabled");
     if (IMG_LOADED == false) {
-      //Make gallery mode once all of the images have IDs set.
-      $(".board").append("<div class='imgThread col-md-10'></div>");
-      $(".imgThread").hide();
+      //Make gallery mode the first time the user tries to switch to it.
       $(".fileThumb").each(function(INDEX) {
         INDEX += 1;
         if ($(this).attr("href").indexOf(".webm") < 1) {
