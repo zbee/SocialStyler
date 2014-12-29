@@ -39,12 +39,12 @@ function handleHide() {
 
 PAGE_MOD.PageMod({
   include: '*.4chan.org',
-  contentScriptFile: [SELF.data.url('jquery.js'), 
-                      SELF.data.url('4chan-thread-style.js')]
+  contentScriptFile: [SELF.data.url('jquery.js'),
+                      SELF.data.url('4chan.js')]
 });
 
 PAGE_MOD.PageMod({
   include: '*.reddit.com',
-  contentScriptFile: [SELF.data.url('jquery.js'), 
+  contentScriptFile: [SELF.data.url('jquery.js'),
                       SELF.data.url('reddit-thread-style.js')]
 });
