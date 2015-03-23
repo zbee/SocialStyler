@@ -4,7 +4,6 @@ let NEW_REPLIES = [];
 let NEW_REPLIES_TO_GET = [];
 let IMG_LOADED = false;
 let MOUSE_POS = { x: -1, y: -1 };
-let CUR_POS = 0;
 let SIDEBAR_OUT = false;
 $(document).mousemove(function(event) {
   MOUSE_POS.x = event.pageX;
@@ -75,7 +74,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("#blotter").remove();
 
   //Remove current stylesheets.
-  $('link[rel*="stylesheet"]').remove();
+  $('link').remove();
 
   //Remove all Javascripts.
   $("script").remove();
@@ -100,7 +99,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $("body").prepend("<div class='col-md-2 text-center' id='sb'></div>");
   $("#sb").hide();
   $("#sb").append("<a id='csb' style='float:right;' class='btn btn-default btn-xs' title='Collapse Sidebar'><i class='fa fa-angle-left'></i></a>");
-  $("body").prepend("<a id='esb' style='float:left;' class='btn btn-default btn-xs' title='Expand Sidebar'><i class='fa fa-angle-right'></i></a>");
+  $("body").prepend("<a id='esb' style='float:left;position:fixed;z-index:100;' class='btn btn-default btn-xs' title='Expand Sidebar'><i class='fa fa-angle-right'></i></a>");
   $("#sb").append("<h1>" + BOARD["TITLE"] + "</h1>");
   $("#sb").append(BOARD["SUBTITLE"]);
   $("#sb").append("<hr>");
@@ -160,7 +159,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   $(".board").append("<div class='imgThread col-md-12'></div>");
   $(".imgThread").hide();
   $("#inf").append(
-    "<br>" + THREAD_STATS[0] + " Replies / " + THREAD_STATS[1] + " Images / On page " + THREAD_STATS[2] +
+    "<br>" + THREAD_STATS[0] + " Replies / " + (parseInt(THREAD_STATS[1]) + 1) + " Images / On page " + THREAD_STATS[2] +
     " / <div class='btn-group' id='tbg'><a class='btn btn-xs btn-default disabled' id='st' title='Thread mode'><i class='fa fa-bars'></i></a><a class='btn btn-xs btn-default' id='si' title='Gallery mode'><i class='fa fa-th-large'></i></a></div>" +
     " / <div class='btn-group'><button type='button' class='btn btn-default btn-xs dropdown-toggle' data-toggle='dropdown'>Filter Thread <span class='caret'></span></button><ul class='dropdown-menu' role='menu'>" +
     "<li><a id='FIL_R' style='cursor:pointer'>Posts with Replies</a></li>" +
@@ -188,6 +187,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   );
 
   //Style Posts here.
+  function stylePosts() {
   $(".postContainer .post").addClass("panel panel-default");
   $(".postContainer blockquote").replaceWith(function () {
     return $('<div/>', {
@@ -209,7 +209,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     IMAGES.push(($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-2] + "/" + ($(this).attr("href")).split("/")[($(this).attr("href")).split("/").length-1]);
   });
   $(".file").each(function(index) {
-    $(this).find("img").attr("id", $(this).attr("id").replace(/\D/g,''));
+    $(this).find("img").attr("id", 
+      $(this).attr("id").replace(/\D/g,''));
     $(this).find("video").attr("id", $(this).attr("id").replace(/\D/g,''));
   });
   $(".postContainer .file img").attr("style", "max-width:125px;");
@@ -273,6 +274,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
     $(".op .panel-body").html(OP_TEXT);
     $(".opContainer").addClass("replyContainer").removeClass("opContainer");
     $(".op").addClass("reply o-p").removeClass("op");
+  }
+  stylePosts();
 
     //Make greentext green.
     $(".quote").css("color", "green");
@@ -310,10 +313,8 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
   //Adding functionality to posts.
   $(".postContainer .file img, .file video").mouseenter(function() {
     $(this).attr("style", "width:100%;");
-    //CUR_POS = $(window).scrollTop();
   }).mouseleave(function() {
     $(this).attr("style", "width:125px;");
-    //$(window).scrollTop(CUR_POS);
   });
 
   $("#st").click(function() {
@@ -344,6 +345,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
 
   //Check to see if the thread has 404'd yet or not.
   window.setInterval(function(){
+    console.log(NEW_REPLIES);
     $.ajax(
       window.location.href,
       {
@@ -381,16 +383,21 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
       });
       let THIS = this;
       if (NEW_REPLIES.length > 0) {
+        console.log(THREAD_ID + ": New Replies.");
         $.each(NEW_REPLIES, function () {
-          let post = $(THIS).find("#pc" + this).html(); //We have the content of the new post. It just needs to be styled, added to .thread and added to .imgThread.
+          //$(".thread").append($(THIS).find("#pc" + this).html());
         });
+        //stylePosts();
+      } else {
+        console.log(THREAD_ID + ": No New Replies.");
       }
     });
     $("#loader").remove();
-    NEW_REPLIES = [];
+    $.each(NEW_REPLIES, function () {THREAD_REPLIES.push(this)})
+    NEW_REPLIES.length = 0;
   }, RE_TIME);
 
-  //Add get search functionality. (doesn't currently check if the person has already rolled)
+  //Add get search functionality.
   var table = '';
   $("#getSearch").click(function() {
     $("#getTable").remove();
@@ -414,7 +421,7 @@ if (/http(?:s)?\:\/\/boards\.4chan\.org\/([a-z]*)\/thread\/([0-9]*)(?:\#[0-9a-z]
         for (var x = 0; x < res[entry].length; x++) {
           if (replies[entry] == undefined) { replies[entry] = []; }
           if (replies[entry].length < 900) {
-            replies[entry] += "<u><a class='text-danger' onClick='$(\"#getMod\").modal(\"hide\")' href='#pc" + res[entry][x].reply + "'>>>" + res[entry][x].reply + "</a></u> ";
+            replies[entry] += "<u><a class='text-danger' onClick='$(\"#getMod\").modal(\"hide\")' href='#pc" + res[entry][x].reply + "'>&gt;&gt;" + res[entry][x].reply + "</a></u> ";
           }
         }
       }
